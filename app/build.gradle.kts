@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -49,6 +52,11 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -66,4 +74,40 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // dagger hilt
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.48.1")
+    // hilt navigation compose
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // navigation compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    // okhttp
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.2")
+    // gsonconverter
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    // moshi kotlin
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
+    // moshi converter
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    // logging interceptor
+    implementation("com.squareup.okhttp3:logging-interceptor:4.8.1")
+
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+
+    // splash screen
+    implementation("androidx.core:core-splashscreen:1.0.0-alpha01")
+
+    //coil --> resim yükleme kütüphanesi
+    implementation("io.coil-kt:coil-compose:2.2.0")
+
+
+
+
 }
