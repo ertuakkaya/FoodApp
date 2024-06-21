@@ -96,6 +96,7 @@ fun YemekKart(yemek: Yemekler) {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
+            // Yemek Resmi
             AsyncImage(
                 model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
                 contentDescription = yemek.yemek_adi,
@@ -125,7 +126,7 @@ fun YemekKart(yemek: Yemekler) {
 
 
             )
-
+            // Yemek Fiyatı ve Sepete Ekle Butonu
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -133,6 +134,7 @@ fun YemekKart(yemek: Yemekler) {
                 horizontalArrangement = Arrangement.SpaceBetween
 
             ){
+                // Yemek Fiyatı
                 Text(
                     text = "${yemek.yemek_fiyat} TL",
                     color = Color.Red,
@@ -145,8 +147,12 @@ fun YemekKart(yemek: Yemekler) {
 
                 )
 
+                // Sepete Ekle Butonu
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                              // TODO: Sepete Ekle
+                              // TODO: Sepete ekleme animasyonunu getir
+                    },
                     modifier = Modifier
                         .wrapContentSize()
                         //.size(25.dp),
@@ -188,7 +194,8 @@ fun YemekListesi(yemekler: List<Yemekler>) {
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            .padding(8.dp)
+            //.padding(8.dp)
+            .background(Color.LightGray)
 
     ){
         items(yemekler.size) { yemek ->
@@ -198,8 +205,11 @@ fun YemekListesi(yemekler: List<Yemekler>) {
 }
 
 
+
+
+
 @Composable
-//@Preview(showBackground = true, showSystemUi = true)
+@Preview()
 fun YemekKartPreview(){
 YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10))
 }
