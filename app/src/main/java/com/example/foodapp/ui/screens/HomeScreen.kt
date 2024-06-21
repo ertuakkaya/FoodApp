@@ -55,11 +55,8 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
             Log.d("HOMESCREEN", "HomeScreen: SUCCESS... success = ${response.success} | yemekeler.size = ${response.yemekler.size}")
 
             if(response.yemekler.isNotEmpty()){
-                //EmptyStateComponent(textValue = response.yemekler[10].yemek_adi)
-                //YemekKart(yemekUrl = response.yemekler[10].yemek_resim_adi) /////////
 
-                //FoodCardComponent(yemekler = response.yemekler)
-
+                //
                 YemekListesi(yemekler = response.yemekler)
 
             }else{
@@ -73,178 +70,19 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
     }
 }
 
-@Composable
-fun EmptyStateComponent(textValue : String){
-    Text(text = textValue)
-}
-
-@Composable
-fun HomeScreenAllFoodLazyGridComponent(){
-    // TODO("LazyGrid yapısı istenilen componentin icine konacak")
-}
-
-@Composable
-fun Yemekler(){
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-    }
-}
-
-/*
-@Composable
-fun SomeComposable() {
-    LazyVerticalGrid(columns = GridCells.Fixed(2)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
-
-            AsyncImage(
-                model = "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png",
-                contentDescription = "Resim"
-            )
-
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween) {
-
-                Button(onClick = { /* Resim tıklandığında yapılacak işlemi ekleyin */ }) {
-                    Text("+")
-                }
-            }
-        }
-    }
-}
-*/
 
 
-/*
-@Composable
-fun YemekListesiScreen(navController: NavHostController, sepet: List<Yemek>, sepeteEkle: (Yemek) -> Unit) {
-    LazyColumn(modifier = Modifier.padding(16.dp)) {
-        items(yemekListesi.chunked(2)) { satirYemekler ->
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                satirYemekler.forEach { yemek ->
-                    YemekKart(navController, yemek, sepeteEkle)
-                }
-            }
-        }
-    }
-}
-
-*/
 
 
-/*
-@Composable
-fun YemekKart(yemekUrl : String) {
-//    Column(
-//        verticalArrangement = Arrangement.SpaceBetween,
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier
-//            .background(Color.Blue)
-//            .padding(8.dp)
-//            .clickable { } // TODO("Yemek detay sayfasına git")
-//            .size(150.dp)
-//    ) {
-//        AsyncImage(
-//            model = "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png",
-//            contentDescription = "Resim",
-//            modifier = Modifier.background(Color.Red)
-//        )
-//
-//        Spacer(modifier = Modifier.size(40.dp))
-//
-//        AsyncImage(
-//            model = "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png",
-//            contentDescription = "Resim",
-//            modifier = Modifier.background(Color.Red)
-//        )
-////        Text(yemek.isim, fontWeight = FontWeight.Bold, fontSize = 16.sp, modifier = Modifier.padding(top = 8.dp))
-////        Text("${yemek.fiyat} TL", fontSize = 14.sp, modifier = Modifier.padding(top = 4.dp))
-////        IconButton(
-////            onClick = { sepeteEkle(yemek) },
-////            modifier = Modifier.align(Alignment.End)
-////        ) {
-////            Icon(imageVector = Icons.Default.Add, contentDescription = "Sepete Ekle")
-////        }
-//    }
-
-    LazyColumn (
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)
-            .background(Color.Blue)
-            .padding(16.dp),
-        //verticalArrangement = Arrangement.SpaceEvenly,
-
-    ){
-        item {
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                    //.background(Color.Red),
-
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ){
-                FoodCard()
-                FoodCard()
-
-            }
-            Row (
-                modifier = Modifier
-                    .fillMaxWidth(),
-                    //.background(Color.Red),
-
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ){
-                FoodCard()
-                FoodCard()
-
-            }
 
 
-        }
 
-    }
-}
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun FoodCard(){
-    Card(
-        onClick = { /*TODO*/ },
-        modifier = Modifier
-            .padding(8.dp)
-            .size(150.dp),
-        shape = CardDefaults.shape,
-        border = null,
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png",
-                    contentDescription = "Resim",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(8.dp)
-                )
-                Text("Yemek Adı")
-                Text("Yemek Fiyatı")
-            }
-        }
-    )
-}
 
-*/
+
+
+
+
 
 @Composable
 fun YemekKart(yemek: Yemekler) {
@@ -259,7 +97,7 @@ fun YemekKart(yemek: Yemekler) {
             modifier = Modifier.padding(16.dp)
         ) {
             AsyncImage(
-                model = yemek.yemek_resim_adi,
+                model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
                 contentDescription = yemek.yemek_adi,
                 modifier = Modifier
                     .height(200.dp)
@@ -273,9 +111,28 @@ fun YemekKart(yemek: Yemekler) {
 }
 
 
+///// worked
+//@Composable
+//fun YemekListesi(yemekler: List<Yemekler>) {
+//    LazyColumn (
+//        modifier = Modifier
+//            .fillMaxSize(),
+//        verticalArrangement = Arrangement.spacedBy(8.dp)
+//    ){
+//        items(yemekler.size) { yemek ->
+//            YemekKart(yemek = yemekler[yemek])
+//        }
+//    }
+//}
+
 @Composable
 fun YemekListesi(yemekler: List<Yemekler>) {
-    LazyColumn {
+    LazyVerticalGrid (
+        columns = GridCells.Adaptive(200.dp),
+        modifier = Modifier
+            .fillMaxSize()
+
+    ){
         items(yemekler.size) { yemek ->
             YemekKart(yemek = yemekler[yemek])
         }
@@ -286,6 +143,6 @@ fun YemekListesi(yemekler: List<Yemekler>) {
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun YemekKartPreview(){
-
+YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10))
 }
 
