@@ -2,6 +2,7 @@ package com.example.foodapp.data.datasource
 
 import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.data.entitiy.YemeklerCevap
 import com.example.foodapp.retrofit.YemeklerDao
 import retrofit2.Response
 import javax.inject.Inject
@@ -9,10 +10,23 @@ import javax.inject.Inject
 
 class YemeklerDataSource @Inject constructor(var yemeklerDao : YemeklerDao) {
 
+    suspend fun tumYemekleriGetir() : Response<YemeklerCevap>{
+        return yemeklerDao.tumYemekleriGetir()
+    }
 
-    suspend fun tumYemekleriGetir() : List<Yemekler>{
+
+
+    /*
+
+
+     suspend fun tumYemekleriGetir() : List<Yemekler>{
         return yemeklerDao.tumYemekleriGetir().yemekler
     }
+
+
+
+
+
 
     suspend fun sepeteYemekEkle(
                                 yemek_adi: String,
@@ -39,7 +53,7 @@ class YemeklerDataSource @Inject constructor(var yemeklerDao : YemeklerDao) {
         return yemeklerDao.sepettekiYemekleriGetir(kullanici_adi).sepet_yemekler
     }
 
-
+    */
 
 
 }
