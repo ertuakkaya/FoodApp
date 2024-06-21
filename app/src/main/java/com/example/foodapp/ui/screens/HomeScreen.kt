@@ -40,6 +40,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,13 +101,29 @@ fun YemekKart(yemek: Yemekler) {
                 contentDescription = yemek.yemek_adi,
                 modifier = Modifier
                     .height(150.dp)
+                    .clickable {
+                        // TODO: YemekDetayScreen'e git
+                    }
                     .fillMaxWidth(),
+
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            // Yemek Adı
             Text(
                 text = yemek.yemek_adi,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
+                modifier = Modifier
+                    //.fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .size(width = 150.dp, height = 30.dp),
+
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.SemiBold
+
+
+
             )
 
             Row(
