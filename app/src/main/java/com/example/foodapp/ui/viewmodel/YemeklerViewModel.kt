@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.foodapp.data.ResourceState
+import com.example.foodapp.data.entitiy.CRUDCevap
 import com.example.foodapp.data.entitiy.SepetYemeklerCevap
 import com.example.foodapp.data.entitiy.YemeklerCevap
 import com.example.foodapp.data.repository.YemeklerRepository
@@ -30,6 +31,10 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
 
     private val _yemekler : MutableStateFlow<ResourceState<YemeklerCevap>> = MutableStateFlow(ResourceState.Loading())
     val yemekler : StateFlow<ResourceState<YemeklerCevap>> = _yemekler
+
+
+    private val _sepeteYemekEkle : MutableStateFlow<ResourceState<CRUDCevap>> = MutableStateFlow(ResourceState.Loading())
+    val sepeteYemekEkle: StateFlow<ResourceState<CRUDCevap>> = _sepeteYemekEkle
 
     /*
     private val _sepetYemekler : MutableStateFlow<ResourceState<SepetYemeklerCevap>> = MutableStateFlow(ResourceState.Loading())
@@ -56,12 +61,35 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
 
     init {
         tumYemekleriGetir()
+        sepettekiYemekleriGetir()
     }
 
     private fun tumYemekleriGetir() {
         viewModelScope.launch (Dispatchers.IO){
             yemeklerRepository.tumYemekleriGetir().collectLatest {yemeklerCevap ->
                 _yemekler.value = yemeklerCevap
+
+            }
+        }
+    }
+
+    fun sepeteYemekEkle(yemek_adi: String, yemek_resim_adi: String, yemek_fiyat: Int, yemek_siparis_adet: Int, kullanici_adi: String = "ertugrul"  ) {
+        viewModelScope.launch (Dispatchers.IO){
+            yemeklerRepository.sepeteYemekEkle(yemek_adi, yemek_resim_adi, yemek_fiyat, yemek_siparis_adet, kullanici_adi).collectLatest {crudCevap->
+                _sepeteYemekEkle.value = crudCevap
+
+            }
+        }
+    }
+
+
+    private val _sepetYemekler : MutableStateFlow<ResourceState<SepetYemeklerCevap>> = MutableStateFlow(ResourceState.Loading())
+    val sepetYemekler : StateFlow<ResourceState<SepetYemeklerCevap>> = _sepetYemekler
+
+    fun sepettekiYemekleriGetir(kullanici_adi: String = "ertugrul") {
+        viewModelScope.launch (Dispatchers.IO){
+            yemeklerRepository.sepettekiYemekleriGetir(kullanici_adi).collectLatest {sepetYemeklerCevap->
+                 _sepetYemekler.value = sepetYemeklerCevap
 
             }
         }

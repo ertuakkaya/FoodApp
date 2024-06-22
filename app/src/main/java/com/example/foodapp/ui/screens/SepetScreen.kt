@@ -31,52 +31,68 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
+import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
+
 @Composable
-fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
-    val yemeklerResponse by yemeklerViewModel.yemekler.collectAsState()
+fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
+    val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
 
 
-    when(yemeklerResponse){
+    when(sepetYemeklerResponse){
         is ResourceState.Loading -> {
-            Log.d("HOMESCREEN", "HomeScreen: Loading...")
+
+            val loading = (sepetYemeklerResponse as ResourceState.Loading)
+            Log.d("SepetScreen", "SepetScreen: Loading... $loading")
         }
         is ResourceState.Success -> {
-            val response = (yemeklerResponse as ResourceState.Success).data
-            Log.d("HOMESCREEN", "HomeScreen: SUCCESS... success = ${response.success} | yemekeler.size = ${response.yemekler.size}")
+            val response = (sepetYemeklerResponse as ResourceState.Success).data
+            Log.d("SepetScreen", "SepetScreen: SUCCESS... success = ${response.success} | yemekeler.size = ${response.sepet_yemekler.size}")
 
-            if(response.yemekler.isNotEmpty()){
+            if(response.sepet_yemekler.isNotEmpty()){
 
                 //
-                YemekListesi(yemekler = response.yemekler)
+                SepetListesi(yemekler = response.sepet_yemekler)
 
             }else{
                 // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
             }
         }
         is ResourceState.Error -> {
-            val error = (yemeklerResponse as ResourceState.Error)
-            Log.d("HOMESCREEN", "HomeScreen: Error... $error")
+            val error = (sepetYemeklerResponse as ResourceState.Error)
+            Log.d("SepetScreen", "SepetScreen: Error... $error")
         }
     }
 }
 
+@Composable
+fun SepetListesi(yemekler: List<SepetYemekler>) {
+    LazyVerticalGrid (
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .fillMaxSize()
+            //.padding(8.dp)
+            .background(Color.LightGray)
+
+    ){
+        items(yemekler.size) { yemek ->
+            SepetKart(yemek = yemekler[yemek])
+        }
+    }
+}
 
 @Composable
-fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel()) { // TODO: viewmodel parametresi eklenecek
+fun SepetKart(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel()) { // TODO: viewmodel parametresi eklenecek
 
-    val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
+    val response by yemeklerViewModel.sepetYemekler.collectAsState()
 
     when(response){
 
@@ -87,7 +103,7 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
         }
         is ResourceState.Success -> {
             val response = (response as ResourceState.Success).data
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: SUCCESS... success = ${response.success} | message = ${response.message}")
+            Log.d("Sepete Ekeleme", "Sepete Ekeleme: SUCCESS... success = ${response.success} | message = ${response.sepet_yemekler.size}")
 
         }
         is ResourceState.Error -> {
@@ -163,9 +179,9 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
                 // Sepete Ekle Butonu
                 IconButton(
                     onClick = {
-                              // TODO: Sepete Ekle api çağrısı yapılacak
-                              // TODO: Sepete ekleme animasyonunu getir
-                              // TODO: viewmodelden sepete ekle fonksiyonu çağrılacak ////
+                        // TODO: Sepete Ekle api çağrısı yapılacak
+                        // TODO: Sepete ekleme animasyonunu getir
+                        // TODO: viewmodelden sepete ekle fonksiyonu çağrılacak ////
 
                         yemeklerViewModel.sepeteYemekEkle(yemek.yemek_adi, yemek.yemek_resim_adi, yemek.yemek_fiyat, 1)
 
@@ -174,15 +190,15 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
                     },
                     modifier = Modifier
                         .wrapContentSize()
-                        //.size(25.dp),
+                    //.size(25.dp),
 
 
                 )
                 {
                     Icon(
-                         painter = painterResource(id = R.drawable.basket),
+                        painter = painterResource(id = R.drawable.basket),
                         contentDescription = "",
-                         modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
@@ -191,70 +207,3 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
         }
     }
 }
-
-/*
-/// worked
-@Composable
-fun YemekListesi(yemekler: List<Yemekler>) {
-    LazyColumn (
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ){
-        items(yemekler.size) { yemek ->
-            YemekKart(yemek = yemekler[yemek])
-        }
-    }
-}
-*/
-@Composable
-fun YemekListesi(yemekler: List<Yemekler>) {
-    LazyVerticalGrid (
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize()
-            //.padding(8.dp)
-            .background(Color.LightGray)
-
-    ){
-        items(yemekler.size) { yemek ->
-            YemekKart(yemek = yemekler[yemek])
-        }
-    }
-}
-
-
-@Composable
-fun yemekDetayScreen(yemekAdi: String, yemekFiyat: Int, yemekResimAdi: String, yemekId: Int) {
-    // TODO: Yemek Detay Ekranı parametre olarak
-
-}
-
-
-@Composable
-@Preview()
-fun YemekKartPreview(){
-YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10))
-}
-
-
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun YemekListesiPreview(){
-    YemekListesi(
-        yemekler = listOf(
-            Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(2, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(3, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(4, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(5, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(6, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(7, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(8, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(9, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(10, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(11, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(12, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(13, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10)))
-}
-

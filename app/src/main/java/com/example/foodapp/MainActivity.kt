@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.foodapp.ui.screens.HomeScreen
+import com.example.foodapp.ui.screens.SepetScreen
 import com.example.foodapp.ui.theme.FoodAppTheme
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,7 +32,8 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    HomeScreen()
+                    //HomeScreen()
+                    SepetScreen()
                 }
 
             }
