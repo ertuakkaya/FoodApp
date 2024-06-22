@@ -1,6 +1,7 @@
 package com.example.foodapp.ui.screens
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -296,8 +298,9 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
     Card(
         shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(2.dp, Color.Gray),
         modifier = Modifier
-            .padding(8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 8.dp)
             .height(130.dp),
             //.wrapContentSize(),
 
@@ -306,7 +309,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
     ) {
         Row(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(4.dp)
                 .fillMaxSize(),
 
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -356,7 +359,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     )
                 // Yemek Fiyatı
                 Text(
-                    text = "${yemek.yemek_fiyat} TL",
+                    text = "${yemek.yemek_fiyat} ₺",
                     color = Color.Red,
                     modifier = Modifier
                     .fillMaxWidth(),
@@ -398,7 +401,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.basket),
+                        painter = painterResource(id = R.drawable.garbage_bin),
                         contentDescription = "",
                         modifier = Modifier.fillMaxSize()
 
@@ -408,7 +411,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
                 // Toplam Fiayt
                 Text(
-                    text = "${yemek.yemek_fiyat * yemek.yemek_siparis_adet} TL",
+                    text = "${yemek.yemek_fiyat * yemek.yemek_siparis_adet} ₺",
                     modifier = Modifier
                         .fillMaxWidth(),
 
