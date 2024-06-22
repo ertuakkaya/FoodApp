@@ -1,6 +1,7 @@
 package com.example.foodapp.ui.screens
 
 import android.util.Log
+import android.widget.Space
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +39,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
+import com.example.foodapp.data.ResourceStateSepeteEkle
 import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
@@ -45,6 +47,7 @@ import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
     val yemeklerResponse by yemeklerViewModel.yemekler.collectAsState()
 
+    //val sepeteEkleResponse by yemeklerViewModel.crudCevap.collectAsState()
 
     when(yemeklerResponse){
         is ResourceState.Loading -> {
@@ -66,9 +69,64 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
         is ResourceState.Error -> {
             val error = (yemeklerResponse as ResourceState.Error)
             Log.d("HOMESCREEN", "HomeScreen: Error... $error")
+        }else->{
+            Log.d("HOMESCREEN", "HomeScreen: Else... ")
+
+        }
+
+    }
+
+
+    /*
+    when(sepeteEkleResponse){
+        is ResourceStateSepeteEkle.Loading -> {
+            Log.d("HOMESCREEN", "HomeScreen: Loading Sepete Ekle ...")
+        }
+        is ResourceStateSepeteEkle.Success -> {
+            val response = (sepeteEkleResponse as ResourceStateSepeteEkle.Success).data
+            Log.d("HOMESCREEN", "HomeScreen: SUCCESS Sepete Ekle ... success = ${response.success} ")
+
+            if(response.success>0){
+                Log.d("HOMESCREEN", "HomeScreen: Sepete Ekleme Başarılı...  ")
+
+
+            }else{
+                // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
+            }
+        }
+        is ResourceStateSepeteEkle.Error -> {
+            val error = (sepeteEkleResponse as ResourceStateSepeteEkle.Error)
+            Log.d("HOMESCREEN", "HomeScreen: Error Sepete Ekle ... $error")
+        }else->{
+            Log.d("HOMESCREEN", "HomeScreen: Else Sepete Ekle ... ")
+
         }
     }
+    */
+
+
+
 }
+
+
+
+@Composable
+fun SepeteYemekEkle(yemek : Yemekler){
+    Row {
+        AsyncImage(
+            model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
+            contentDescription = ""
+        )
+        Spacer(modifier = Modifier.size(8.dp))
+
+        Text(text = yemek.yemek_adi)
+
+        Spacer(modifier = Modifier.size(8.dp))
+
+        Text(text = "${yemek.yemek_fiyat} TL")
+    }
+}
+
 
 
 @Composable
@@ -140,6 +198,7 @@ fun YemekKart(yemek: Yemekler) {
                     onClick = {
                               // TODO: Sepete Ekle api çağrısı yapılacak
                               // TODO: Sepete ekleme animasyonunu getir
+                                //onSepeteEkleClick(yemek)
 
                     },
                     modifier = Modifier
@@ -177,8 +236,10 @@ fun YemekListesi(yemekler: List<Yemekler>) {
     }
 }
 */
+
+
 @Composable
-fun YemekListesi(yemekler: List<Yemekler>) {
+fun YemekListesi(yemekler: List<Yemekler>,){
     LazyVerticalGrid (
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -189,9 +250,12 @@ fun YemekListesi(yemekler: List<Yemekler>) {
     ){
         items(yemekler.size) { yemek ->
             YemekKart(yemek = yemekler[yemek])
+
         }
     }
 }
+
+
 
 
 @Composable

@@ -28,7 +28,7 @@ interface YemeklerDao {
                                 @Field("yemek_fiyat") yemek_fiyat: Int,
                                 @Field("yemek_siparis_adet") yemek_siparis_adet: Int,
                                 @Field("kullanici_adi") kullanici_adi: String = "ertugrul"
-    ): CRUDCevap {
+    ): Response<CRUDCevap> {
         TODO(
             "SEPETE YEMEK EKLERKEN yemek_adi ," +
                     " yemek_resim_adi ," +
