@@ -38,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
@@ -207,25 +208,18 @@ fun SepetKart(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltVi
 fun SepetListesi(yemekler: List<SepetYemekler>) {
 
 
-
-    LazyVerticalGrid (
+    LazyVerticalGrid(
         columns = GridCells.Fixed(1),
         modifier = Modifier
             //.fillMaxSize()
             .fillMaxWidth()
-            //.padding(8.dp)
+            //.padding(top = 100.dp, bottom = 100.dp)
             .background(Color.LightGray)
 
-    ){
+    ) {
 
         items(yemekler.size) { yemek ->
-
-
-                SepetKart(yemek = yemekler[yemek])
-                //Log.d("SepetListesi", "Sepet Listesi: Yemek Adı: ${yemekler[yemek].yemek_adi} : Adet ${yemekler[yemek].yemek_siparis_adet} ")
-
-
-
+            SepetKart(yemek = yemekler[yemek])
         }
     }
 }
@@ -281,6 +275,24 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
             Log.d("Sepete Ekleme", "Sepete Ekleme: Error... $error")
         }
     }
+
+    val sepetYemekSilResponse by yemeklerViewModel.sepettenYemekSil.collectAsState()
+
+    when (sepetYemekSilResponse) {
+        is ResourceState.Loading -> {
+            Log.d("SepetSilme", "SepetSilme: Loading...")
+        }
+        is ResourceState.Success -> {
+            val response = (sepetYemekSilResponse as ResourceState.Success).data
+            Log.d("SepetSilme", "SepetSilme: SUCCESS... success = ${response.success} | message = ${response.message}")
+        }
+        is ResourceState.Error -> {
+            val error = (sepetYemekSilResponse as ResourceState.Error)
+            Log.d("SepetSilme", "SepetSilme: Error... $error")
+        }
+    }
+
+
 
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -374,7 +386,11 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
             ){
                 // Sepet Sil Butonu
                 IconButton(
-                    onClick = { /*TODO: SEPETTEN SIL API'SI ÇAĞIRILACAK*/ },
+                    onClick = {
+                        yemeklerViewModel.sepettenYemekSil(yemek.sepet_yemek_id)
+                        // sepetteki yemkleri tekrar cek
+                        yemeklerViewModel.sepettekiYemekleriGetir()
+                    },
                     modifier = Modifier
                         .size(50.dp)
                         .padding(end = 8.dp)

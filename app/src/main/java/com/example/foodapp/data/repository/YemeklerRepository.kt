@@ -73,6 +73,24 @@ class YemeklerRepository @Inject constructor(var yemeklerDataSource: YemeklerDat
     }
 
 
+    suspend fun sepettenYemekSil(sepet_yemek_id: Int, kullanici_adi: String = "ertugrul") : Flow<ResourceState<CRUDCevap>>{
+        return flow {
+            emit(ResourceState.Loading()) // başta loading göster
+
+            val response = yemeklerDataSource.sepettenYemekSil(sepet_yemek_id, kullanici_adi)
+
+            if(response.isSuccessful && response.body() != null){
+                emit(ResourceState.Success(response.body()!!))
+
+            }else{
+                emit(ResourceState.Error("Sepetteki Yemekler getirilirken hata oluştu"))
+
+            }
+        }.catch { e->
+            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow"))
+        }
+    }
+
     /*
 
    suspend fun tumYemekleriGetir() : Flow<ResourceState<YemeklerCevap>>{

@@ -44,7 +44,7 @@ interface YemeklerDao {
     @POST("yemekler/sepettenYemekSil.php")
     suspend fun sepettenYemekSil(
                                  @Field("sepet_yemek_id") sepet_yemek_id: Int,
-                                 @Field("kullanici_adi") kullanici_adi: String = "ertugrul"): CRUDCevap {
+                                 @Field("kullanici_adi") kullanici_adi: String = "ertugrul"): Response<CRUDCevap> {
 
 
         TODO(

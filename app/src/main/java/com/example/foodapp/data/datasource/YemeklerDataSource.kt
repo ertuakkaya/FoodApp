@@ -39,6 +39,12 @@ class YemeklerDataSource @Inject constructor(var yemeklerDao : YemeklerDao) {
     }
 
 
+    suspend fun sepettenYemekSil(sepet_yemek_id: Int,
+                                 kullanici_adi: String = "ertugrul"): Response<CRUDCevap>{
+        return yemeklerDao.sepettenYemekSil(sepet_yemek_id,kullanici_adi)
+    }
+
+
     /*
 
 

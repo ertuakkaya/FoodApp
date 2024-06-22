@@ -95,6 +95,18 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
         }
     }
 
+    private val _sepettenYemekSil : MutableStateFlow<ResourceState<CRUDCevap>> = MutableStateFlow(ResourceState.Loading())
+    val sepettenYemekSil: StateFlow<ResourceState<CRUDCevap>> = _sepettenYemekSil
+
+    fun sepettenYemekSil(sepet_yemek_id: Int, kullanici_adi: String = "ertugrul") {
+        viewModelScope.launch (Dispatchers.IO){
+            yemeklerRepository.sepettenYemekSil(sepet_yemek_id, kullanici_adi).collectLatest {crudCevap->
+                _sepettenYemekSil.value = crudCevap
+
+            }
+        }
+    }
+
 
     /*
     fun tumYemekleriGetir() {
