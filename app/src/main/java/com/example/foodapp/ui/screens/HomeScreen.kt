@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -64,7 +65,7 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navContr
             if(response.yemekler.isNotEmpty()){
 
                 //
-                YemekListesi(yemekler = response.yemekler)
+                YemekListesi(yemekler = response.yemekler,navController = navController)
 
             }else{
                 // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
@@ -103,8 +104,9 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navContr
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel()) { // TODO: viewmodel parametresi eklenecek
+fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel(),navController: NavController) { // TODO: viewmodel parametresi eklenecek
 
    val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
 
@@ -131,7 +133,12 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
        modifier = Modifier
            .padding(8.dp)
            .wrapContentSize(),
-       elevation =  CardDefaults.cardElevation(4.dp)
+       elevation =  CardDefaults.cardElevation(4.dp),
+       onClick = {
+           // Tıklama olayında, yemeğin bilgilerini DetayScreen'e geçirin
+           navController.navigate("detay/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/${yemek.yemek_id}")
+       }
+
    ) {
        Column(
            modifier = Modifier.padding(8.dp)
@@ -142,12 +149,6 @@ fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewMod
                contentDescription = yemek.yemek_adi,
                modifier = Modifier
                    .height(150.dp)
-                   .clickable {
-                       // TODO: YemekDetayScreen'e git
-                       //TODO: (yemekDetayScreen(yemek.yemek_adi,yemek.yemek_fiyat,yemek.yemek_resim_adi,yemek.yemek_id))
-
-
-                   }
                    .fillMaxWidth(),
 
                contentScale = ContentScale.Fit
@@ -238,7 +239,7 @@ fun YemekListesi(yemekler: List<Yemekler>) {
 }
 */
 @Composable
-fun YemekListesi(yemekler: List<Yemekler>) {
+fun YemekListesi(yemekler: List<Yemekler>,navController: NavController) {
    LazyVerticalGrid (
        columns = GridCells.Fixed(2),
        modifier = Modifier
@@ -248,7 +249,7 @@ fun YemekListesi(yemekler: List<Yemekler>) {
 
    ){
        items(yemekler.size) { yemek ->
-           YemekKart(yemek = yemekler[yemek])
+           YemekKart(yemek = yemekler[yemek],navController = navController)
        }
    }
 }
@@ -261,31 +262,31 @@ fun yemekDetayScreen(yemekAdi: String, yemekFiyat: Int, yemekResimAdi: String, y
 }
 
 
-@Composable
-@Preview()
-fun YemekKartPreview(){
-YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10))
-}
+//@Composable
+//@Preview()
+//fun YemekKartPreview(){
+//YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10))
+//}
 
 
-@Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun YemekListesiPreview(){
-   YemekListesi(
-       yemekler = listOf(
-           Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(2, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(3, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(4, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(5, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(6, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(7, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(8, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(9, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(10, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(11, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(12, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-           Yemekler(13, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10)))
-}
+//@Composable
+//@Preview(showBackground = true, showSystemUi = true)
+//fun YemekListesiPreview(){
+//   YemekListesi(
+//       yemekler = listOf(
+//           Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(2, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(3, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(4, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(5, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(6, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(7, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(8, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(9, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(10, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(11, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(12, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+//           Yemekler(13, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10)))
+//}
 
 
