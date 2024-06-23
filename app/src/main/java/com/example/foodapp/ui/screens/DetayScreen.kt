@@ -3,6 +3,7 @@ package com.example.foodapp.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -24,34 +26,41 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
+//onAddToCart : (Int) -> Unit
 @Composable
-fun DetayScreen(yemek: SepetYemekler, onAddToCart: (Int) -> Unit) {
+fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel() ) {
     var quantity = yemek.yemek_siparis_adet
+    var yemek_id = yemek.sepet_yemek_id
+    var yemek_adi = yemek.yemek_adi
+    var yemek_resim_adi = yemek.yemek_resim_adi
+    var yemek_fiyat = yemek.yemek_fiyat
+    var kullanici_adi = yemek.kullanici_adi
+
+
 
     val totalPrice = yemek.yemek_fiyat * quantity
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // Yemek Resmi
         AsyncImage(
             model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
             contentDescription = yemek.yemek_adi,
             modifier = Modifier
-                .height(150.dp)
-                .clickable {
-                    // TODO: YemekDetayScreen'e git
-                    //TODO: (yemekDetayScreen(yemek.yemek_adi,yemek.yemek_fiyat,yemek.yemek_resim_adi,yemek.yemek_id))
+                .size(200.dp),
 
-
-                }
-                .fillMaxWidth(),
 
             contentScale = ContentScale.Fit
         )
@@ -101,11 +110,20 @@ fun DetayScreen(yemek: SepetYemekler, onAddToCart: (Int) -> Unit) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { onAddToCart(quantity) },
+            onClick = {
+                yemeklerViewModel.sepeteYemekEkle(
+                    yemek_adi,
+                    yemek_resim_adi,
+                    yemek_fiyat,
+                    quantity,
+                    kullanici_adi
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(Color.Red)
         ) {
             Text(text = "Sepete Ekle", color = Color.White)
+
         }
     }
 }

@@ -76,14 +76,14 @@ class MainActivity  : ComponentActivity() {
                                     yemek_resim_adi = yemekResimAdi,
                                     yemek_siparis_adet = 1
                                 ),
-                                onAddToCart = { quantity ->
-                                    viewModel.sepeteYemekEkle(
-                                        yemekAdi,
-                                        yemekResimAdi,
-                                        yemekFiyat,
-                                        quantity
-                                    )
-                                }
+//                                onAddToCart = { quantity ->
+//                                    viewModel.sepeteYemekEkle(
+//                                        yemek_adi = yemekAdi,
+//                                        yemek_resim_adi = yemekResimAdi,
+//                                        yemek_fiyat = yemekFiyat,
+//                                        yemek_siparis_adet = quantity
+//                                    )
+//                                }
                             )
                         }
 
