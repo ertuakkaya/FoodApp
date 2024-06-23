@@ -102,7 +102,7 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
         viewModelScope.launch (Dispatchers.IO){
             yemeklerRepository.sepettenYemekSil(sepet_yemek_id, kullanici_adi).collectLatest {crudCevap->
                 _sepettenYemekSil.value = crudCevap
-
+                sepettekiYemekleriGetir() // sepetten yemek silindikten sonra sepetteki yemekleri tekrar getir
             }
         }
     }

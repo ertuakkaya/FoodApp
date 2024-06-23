@@ -4,7 +4,10 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
@@ -44,7 +48,8 @@ import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
 @Composable
-fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
+fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navController: NavController) {
+
     val yemeklerResponse by yemeklerViewModel.yemekler.collectAsState()
 
 
@@ -70,163 +75,188 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
             Log.d("HOMESCREEN", "HomeScreen: Error... $error")
         }
     }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Sepete Git
+        IconButton(
+            onClick = {
+                navController.navigate("sepet")
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .size(66.dp)
+                .background(Color.White, shape = RoundedCornerShape(28.dp))
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.basket),
+                contentDescription = "Sepet",
+                modifier = Modifier.size(30.dp),
+                tint = Color.Black
+            )
+        }
+    }
+
+
 }
 
 
 @Composable
 fun YemekKart(yemek: Yemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel()) { // TODO: viewmodel parametresi eklenecek
 
-    val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
+   val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
 
-    when(response){
+   when(response){
 
-        is ResourceState.Loading -> {
+       is ResourceState.Loading -> {
 
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: Loading...")
+           Log.d("Sepete Ekeleme", "Sepete Ekeleme: Loading...")
 
-        }
-        is ResourceState.Success -> {
-            val response = (response as ResourceState.Success).data
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: SUCCESS... success = ${response.success} | message = ${response.message}")
+       }
+       is ResourceState.Success -> {
+           val response = (response as ResourceState.Success).data
+           Log.d("Sepete Ekeleme", "Sepete Ekeleme: SUCCESS... success = ${response.success} | message = ${response.message}")
 
-        }
-        is ResourceState.Error -> {
-            val error = (response as ResourceState.Error)
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: Error... $error")
-        }
-    }
+       }
+       is ResourceState.Error -> {
+           val error = (response as ResourceState.Error)
+           Log.d("Sepete Ekeleme", "Sepete Ekeleme: Error... $error")
+       }
+   }
 
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        modifier = Modifier
-            .padding(8.dp)
-            .wrapContentSize(),
-        elevation =  CardDefaults.cardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
-            // Yemek Resmi
-            AsyncImage(
-                model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
-                contentDescription = yemek.yemek_adi,
-                modifier = Modifier
-                    .height(150.dp)
-                    .clickable {
-                        // TODO: YemekDetayScreen'e git
-                        //TODO: (yemekDetayScreen(yemek.yemek_adi,yemek.yemek_fiyat,yemek.yemek_resim_adi,yemek.yemek_id))
-
-
-                    }
-                    .fillMaxWidth(),
-
-                contentScale = ContentScale.Fit
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Yemek Adı
-            Text(
-                text = yemek.yemek_adi,
-                modifier = Modifier
-                    //.fillMaxWidth()
-                    .align(Alignment.CenterHorizontally)
-                    .size(width = 150.dp, height = 30.dp),
-
-                fontSize = 20.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.SemiBold
+   Card(
+       shape = RoundedCornerShape(8.dp),
+       modifier = Modifier
+           .padding(8.dp)
+           .wrapContentSize(),
+       elevation =  CardDefaults.cardElevation(4.dp)
+   ) {
+       Column(
+           modifier = Modifier.padding(8.dp)
+       ) {
+           // Yemek Resmi
+           AsyncImage(
+               model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
+               contentDescription = yemek.yemek_adi,
+               modifier = Modifier
+                   .height(150.dp)
+                   .clickable {
+                       // TODO: YemekDetayScreen'e git
+                       //TODO: (yemekDetayScreen(yemek.yemek_adi,yemek.yemek_fiyat,yemek.yemek_resim_adi,yemek.yemek_id))
 
 
+                   }
+                   .fillMaxWidth(),
 
-            )
-            // Yemek Fiyatı ve Sepete Ekle Butonu
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+               contentScale = ContentScale.Fit
+           )
+           Spacer(modifier = Modifier.height(8.dp))
 
-                horizontalArrangement = Arrangement.SpaceBetween
+           // Yemek Adı
+           Text(
+               text = yemek.yemek_adi,
+               modifier = Modifier
+                   //.fillMaxWidth()
+                   .align(Alignment.CenterHorizontally)
+                   .size(width = 150.dp, height = 30.dp),
 
-            ){
-                // Yemek Fiyatı
-                Text(
-                    text = "${yemek.yemek_fiyat} TL",
-                    color = Color.Red,
-                    modifier = Modifier
-                        .weight(1f)
-                        .align(Alignment.CenterVertically)
-                        //.border(1.dp, Color.Red, RectangleShape)
-                        .padding(start = 8.dp),
-                    fontSize = 20.sp
-
-                )
-
-                // Sepete Ekle Butonu
-                IconButton(
-                    onClick = {
-                              // TODO: Sepete Ekle api çağrısı yapılacak
-                              // TODO: Sepete ekleme animasyonunu getir
-                              // TODO: viewmodelden sepete ekle fonksiyonu çağrılacak ////
-
-                        yemeklerViewModel.sepeteYemekEkle(yemek.yemek_adi, yemek.yemek_resim_adi, yemek.yemek_fiyat, 1)
+               fontSize = 20.sp,
+               textAlign = TextAlign.Center,
+               fontWeight = FontWeight.SemiBold
 
 
 
-                    },
-                    modifier = Modifier
-                        .wrapContentSize()
-                        //.size(25.dp),
+           )
+           // Yemek Fiyatı ve Sepete Ekle Butonu
+           Row(
+               modifier = Modifier
+                   .fillMaxWidth(),
+
+               horizontalArrangement = Arrangement.SpaceBetween
+
+           ){
+               // Yemek Fiyatı
+               Text(
+                   text = "${yemek.yemek_fiyat} TL",
+                   color = Color.Red,
+                   modifier = Modifier
+                       .weight(1f)
+                       .align(Alignment.CenterVertically)
+                       //.border(1.dp, Color.Red, RectangleShape)
+                       .padding(start = 8.dp),
+                   fontSize = 20.sp
+
+               )
+
+               // Sepete Ekle Butonu
+               IconButton(
+                   onClick = {
+                             // TODO: Sepete Ekle api çağrısı yapılacak
+                             // TODO: Sepete ekleme animasyonunu getir
+                             // TODO: viewmodelden sepete ekle fonksiyonu çağrılacak ////
+
+                       yemeklerViewModel.sepeteYemekEkle(yemek.yemek_adi, yemek.yemek_resim_adi, yemek.yemek_fiyat, 1)
 
 
-                )
-                {
-                    Icon(
-                         painter = painterResource(id = R.drawable.basket),
-                        contentDescription = "",
-                         modifier = Modifier.fillMaxSize()
-                    )
-                }
+
+                   },
+                   modifier = Modifier
+                       .wrapContentSize()
+                       //.size(25.dp),
 
 
-            }
-        }
-    }
+               )
+               {
+                   Icon(
+                        painter = painterResource(id = R.drawable.add_square),
+                       contentDescription = "",
+                        modifier = Modifier.fillMaxSize()
+                   )
+               }
+
+
+           }
+       }
+   }
 }
 
 /*
 /// worked
 @Composable
 fun YemekListesi(yemekler: List<Yemekler>) {
-    LazyColumn (
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ){
-        items(yemekler.size) { yemek ->
-            YemekKart(yemek = yemekler[yemek])
-        }
-    }
+   LazyColumn (
+       modifier = Modifier
+           .fillMaxSize(),
+       verticalArrangement = Arrangement.spacedBy(8.dp)
+   ){
+       items(yemekler.size) { yemek ->
+           YemekKart(yemek = yemekler[yemek])
+       }
+   }
 }
 */
 @Composable
 fun YemekListesi(yemekler: List<Yemekler>) {
-    LazyVerticalGrid (
-        columns = GridCells.Fixed(2),
-        modifier = Modifier
-            .fillMaxSize()
-            //.padding(8.dp)
-            .background(Color.LightGray)
+   LazyVerticalGrid (
+       columns = GridCells.Fixed(2),
+       modifier = Modifier
+           .fillMaxSize()
+           //.padding(8.dp)
+           .background(Color.LightGray)
 
-    ){
-        items(yemekler.size) { yemek ->
-            YemekKart(yemek = yemekler[yemek])
-        }
-    }
+   ){
+       items(yemekler.size) { yemek ->
+           YemekKart(yemek = yemekler[yemek])
+       }
+   }
 }
 
 
 @Composable
 fun yemekDetayScreen(yemekAdi: String, yemekFiyat: Int, yemekResimAdi: String, yemekId: Int) {
-    // TODO: Yemek Detay Ekranı parametre olarak
+   // TODO: Yemek Detay Ekranı parametre olarak
 
 }
 
@@ -241,20 +271,21 @@ YemekKart(yemek = Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/r
 @Composable
 @Preview(showBackground = true, showSystemUi = true)
 fun YemekListesiPreview(){
-    YemekListesi(
-        yemekler = listOf(
-            Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(2, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(3, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(4, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(5, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(6, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(7, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(8, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(9, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(10, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(11, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(12, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
-            Yemekler(13, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10)))
+   YemekListesi(
+       yemekler = listOf(
+           Yemekler(1, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(2, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(3, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(4, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(5, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(6, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(7, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(8, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(9, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(10, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(11, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(12, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10),
+           Yemekler(13, "Yemek Adı", "http://kasimadalan.pe.hu/yemekler/resimler/ayran.png", 10)))
 }
+
 

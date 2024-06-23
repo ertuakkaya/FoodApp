@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
@@ -53,7 +54,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
+fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navController: NavController) {
     val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
 
     when (sepetYemeklerResponse) {
@@ -70,7 +71,7 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
                     .map { (yemekAdi, yemekList) ->
                         yemekList.first().copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
                     }
-                SepetListesi(yemekler = aggregatedYemekler)
+                SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel)
             } else {
                 // TODO: EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek
             }
@@ -80,12 +81,15 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
             Log.d("SepetScreen", "SepetScreen: Error... $error")
         }
     }
+
+
+
 }
 
 
 
 @Composable
-fun SepetListesi(yemekler: List<SepetYemekler>) {
+fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewModel) {
 
 
     LazyVerticalGrid(
@@ -99,7 +103,7 @@ fun SepetListesi(yemekler: List<SepetYemekler>) {
     ) {
 
         items(yemekler.size) { yemek ->
-            SepetKart(yemek = yemekler[yemek])
+            SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel)
         }
     }
 }
@@ -247,9 +251,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     onClick = {
                         coroutineScope.launch {
                             yemeklerViewModel.sepettenYemekSil(yemek.sepet_yemek_id)
-                            // sepetteki yemkleri tekrar cek
-                            delay(500)
-                            yemeklerViewModel.sepettekiYemekleriGetir()
+                            //yemeklerViewModel.sepettekiYemekleriGetir()
                         }
 
                     },

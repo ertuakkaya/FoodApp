@@ -14,6 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.foodapp.ui.screens.HomeScreen
 import com.example.foodapp.ui.screens.SepetScreen
 import com.example.foodapp.ui.theme.FoodAppTheme
@@ -21,9 +25,10 @@ import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity  : ComponentActivity() {
 
     private val viewModel: YemeklerViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -33,7 +38,21 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     //HomeScreen()
-                    SepetScreen()
+                    //SepetScreen(navController = nav)
+                    
+                    val navController = rememberNavController()
+                    
+                    NavHost(navController = navController, startDestination ="home") {
+                        composable("home") {
+                            HomeScreen(viewModel,navController = navController)
+                        }
+                        composable("sepet") {
+                            SepetScreen(viewModel,navController = navController)
+                            viewModel.sepettekiYemekleriGetir()
+                        }
+
+                    }
+
                 }
 
             }
