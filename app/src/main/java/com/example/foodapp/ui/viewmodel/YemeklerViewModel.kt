@@ -61,7 +61,7 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
 
     init {
         tumYemekleriGetir()
-        sepettekiYemekleriGetir()
+        //sepettekiYemekleriGetir()
     }
 
     private fun tumYemekleriGetir() {

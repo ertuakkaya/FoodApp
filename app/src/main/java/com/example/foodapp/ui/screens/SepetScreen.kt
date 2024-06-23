@@ -251,13 +251,12 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     onClick = {
                         coroutineScope.launch {
                             yemeklerViewModel.sepettenYemekSil(yemek.sepet_yemek_id)
-                            //yemeklerViewModel.sepettekiYemekleriGetir()
                         }
 
                     },
                     modifier = Modifier
-                        .size(50.dp)
-                        .padding(end = 8.dp)
+                        .size(30.dp)
+                        //.padding(end = 8.dp)
                         .align(Alignment.CenterHorizontally),
 
                 ) {
@@ -279,7 +278,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
 
                     //.padding(top = 4.dp),
-                    fontSize = 25.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     textAlign = TextAlign.Center,
                 )
