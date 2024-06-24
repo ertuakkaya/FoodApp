@@ -28,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -104,6 +105,19 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
 
 
 
+        Text(
+            text = "Details",
+            style = MaterialTheme.typography.titleLarge, // Or another appropriate style
+            fontWeight = FontWeight.Bold,
+            //fontStyle = MaterialTheme.typography.subtitle1.fontStyle,
+            fontSize = 30.sp,
+
+
+        )
+
+        Spacer(modifier = Modifier.height(66.dp))
+
+
         // Yemek Resmi
         AsyncImage(
             model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
@@ -131,7 +145,7 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
 
         // Yemek Fiyatı
         Text(
-            text = "Fiyat: ${yemek.yemek_fiyat} ₺",
+            text = "Price: ${yemek.yemek_fiyat} ₺",
             //style = MaterialTheme.typography.h6,
             color = Color.Gray
         )
@@ -143,7 +157,7 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
             verticalAlignment = Alignment.CenterVertically)
         {
 
-            Text(text = "Adet: ")
+            Text(text = "Quantity: ")
 
             Spacer(modifier = Modifier.width(8.dp))
 
@@ -167,7 +181,7 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Toplam Fiyat: $totalPrice TL",
+            text = "Total: $totalPrice ₺",
             //style = MaterialTheme.typography.h6,
             fontWeight = FontWeight.Bold
         )
@@ -192,7 +206,7 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
 
             colors = ButtonDefaults.buttonColors(Color.DarkGray)
         ) {
-            Text(text = "Sepete Ekle", color = Color.White)
+            Text(text = "Add to Cart", color = Color.White)
 
         }
     }

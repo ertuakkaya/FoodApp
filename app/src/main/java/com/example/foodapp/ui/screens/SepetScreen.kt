@@ -3,6 +3,7 @@ package com.example.foodapp.ui.screens
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,16 +15,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,12 +37,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,7 +79,12 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navContr
                     .map { (yemekAdi, yemekList) ->
                         yemekList.first().copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
                     }
-                SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel)
+
+
+
+
+                SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel,navController = navController)////////
+                //ShoppingCartScreen(cartItems = aggregatedYemekler, viewModel =yemeklerViewModel )
             } else {
                 // TODO: EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek
             }
@@ -89,29 +102,126 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navContr
 
 
 @Composable
-fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewModel) {
+fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewModel,navController: NavController) {
 
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(1),
+    Column (
         modifier = Modifier
-            //.fillMaxSize()
-            .fillMaxWidth()
-            //.padding(top = 100.dp, bottom = 100.dp)
-            .background(Color.LightGray)
+            .fillMaxSize()
+            .background(Color.White),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+       Row (
+              modifier = Modifier
+                  .padding(16.dp)
+                  .fillMaxWidth(),
+                  //.padding(top = 40.dp, bottom = 16.dp),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically
+       ){
+           // Back Button
+           IconButton(
+               onClick = {
+                   navController.navigate("home")
+               },
+               modifier = Modifier
+                   //.padding(, top = 8.dp)
+                   //.size(60.dp)
+                   .weight(1f)
+                   .wrapContentSize(Alignment.CenterStart)
+                   //.align(Alignment.CenterStart)
+                   .clip(RoundedCornerShape(8.dp)),
 
-    ) {
 
-        items(yemekler.size) { yemek ->
-            SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel)
+           ) {
+               Icon(
+                   Icons.Filled.Close,
+                   contentDescription = "",
+                   modifier = Modifier
+                       .size(40.dp),
+                   tint = Color.Gray
+               )
+           }
+
+           // Cart Text
+           Text(
+               modifier = Modifier
+                   .weight(1f),
+               //.border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+
+
+               text = "Cart",
+               style = MaterialTheme.typography.titleLarge,
+               textAlign = TextAlign.Center,
+               fontSize = 45.sp,
+               fontWeight = FontWeight.Bold,
+
+               //maxLines = 1,
+               //overflow = TextOverflow.Ellipsis
+           )
+
+           Spacer(Modifier.width(40.dp).weight(1f)) // Butonun genişliği kadar
+       }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Cart Items
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(1),
+            modifier = Modifier
+                //.fillMaxSize()
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                //.background(Color.LightGray)
+                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+
+        ) {
+
+            items(yemekler.size) { yemek ->
+                SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel)
+            }
         }
     }
 }
 
 
+/*
+@Composable
+fun ShoppingCartScreen(cartItems: List<SepetYemekler>, viewModel: YemeklerViewModel) {
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        verticalArrangement = Arrangement.Top // Align content to the top
+    ) {
+        Text(
+            text = "Cart",
+            style = MaterialTheme.typography.headlineLarge, // Use a more appropriate header stylefontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp, bottom = 16.dp)
+                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+                .padding(8.dp) // Add padding inside the border
+        )
+
+        LazyColumn( // Use LazyColumn for better performance with lists
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
+        ) {
+            items(cartItems.size) { cartItem -> // Iterate directly over the list
+                SepetKart(yemek = cartItems[cartItem], yemeklerViewModel = viewModel)
+            }
+        }
+    }
+}
 
 
-
+ */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,7 +269,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(2.dp, Color.Gray),
         modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 8.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
             .height(130.dp),
             //.wrapContentSize(),
 
@@ -230,7 +340,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 )
                 // Yemek Adedi
                 Text(
-                    text = "Adet: ${yemek.yemek_siparis_adet}",
+                    text = "Quantity: ${yemek.yemek_siparis_adet}",
                     modifier = Modifier
                         .fillMaxWidth(),
 

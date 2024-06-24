@@ -163,12 +163,13 @@ fun HomeScreen(
                         .fillMaxSize()
                         .padding(16.dp)
                 ) {
+                    // Arama Kısmı
                     OutlinedTextField(
                         value = searchText,
                         onValueChange = {
                             searchText = it
                         },
-                        label = { Text("Yemek Ara") },
+                        label = { Text("Search") },
                         modifier = Modifier.fillMaxWidth(),
                         leadingIcon = {
                             Icon(
@@ -180,6 +181,7 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    // Yemek Listesi
                     YemekListesi(yemekler = filteredYemekler, navController = navController)
                 }
             } else {
