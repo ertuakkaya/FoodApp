@@ -6,6 +6,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
@@ -43,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
@@ -50,7 +55,7 @@ import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
 //onAddToCart : (Int) -> Unit
 @Composable
-fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel() ) {
+fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel() ,navController: NavController) {
     //var quantity = 0
     var yemek_id = yemek.sepet_yemek_id
     var yemek_adi = yemek.yemek_adi
@@ -68,6 +73,26 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
 
     val totalPrice = yemek.yemek_fiyat * quantity
 
+
+    IconButton(
+        onClick = { navController.navigate("home") }, // back to home
+        modifier = Modifier
+            .padding(20.dp)
+            .wrapContentSize(Alignment.TopStart)
+            .clip(RoundedCornerShape(8.dp)),
+
+
+
+
+    ) {
+        Icon(
+            Icons.Filled.Close, contentDescription = "",
+            modifier = Modifier.size(40.dp),
+            tint = Color.Gray
+        )
+
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,6 +101,9 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+
+
+
         // Yemek Resmi
         AsyncImage(
             model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",

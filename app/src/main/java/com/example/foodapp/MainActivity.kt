@@ -75,7 +75,7 @@ class MainActivity  : ComponentActivity() {
                                     yemek_fiyat = yemekFiyat,
                                     yemek_resim_adi = yemekResimAdi,
                                     yemek_siparis_adet = 1
-                                ),
+                                ),navController = navController
 //                                onAddToCart = { quantity ->
 //                                    viewModel.sepeteYemekEkle(
 //                                        yemek_adi = yemekAdi,
