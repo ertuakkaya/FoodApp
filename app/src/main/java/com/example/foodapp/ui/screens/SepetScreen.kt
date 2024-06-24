@@ -7,7 +7,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -62,7 +64,10 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navController: NavController) {
+fun SepetScreen(
+    yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
+    navController: NavController
+) {
     val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
 
     when (sepetYemeklerResponse) {
@@ -70,25 +75,35 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navContr
             val loading = (sepetYemeklerResponse as ResourceState.Loading)
             Log.d("SepetScreen", "SepetScreen: Loading... $loading")
         }
+
         is ResourceState.Success -> {
             val response = (sepetYemeklerResponse as ResourceState.Success).data
-            Log.d("SepetScreen", "SepetScreen: SUCCESS... success = ${response.success} | yemekler.size = ${response.sepet_yemekler.size}")
+            Log.d(
+                "SepetScreen",
+                "SepetScreen: SUCCESS... success = ${response.success} | yemekler.size = ${response.sepet_yemekler.size}"
+            )
 
             if (response.sepet_yemekler.isNotEmpty()) {
                 val aggregatedYemekler = response.sepet_yemekler.groupBy { it.yemek_adi }
                     .map { (yemekAdi, yemekList) ->
-                        yemekList.first().copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
+                        yemekList.first()
+                            .copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
                     }
 
 
 
 
-                SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel,navController = navController)////////
+                SepetListesi(
+                    yemekler = aggregatedYemekler,
+                    yemeklerViewModel = yemeklerViewModel,
+                    navController = navController
+                )////////
                 //ShoppingCartScreen(cartItems = aggregatedYemekler, viewModel =yemeklerViewModel )
             } else {
                 // TODO: EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek
             }
         }
+
         is ResourceState.Error -> {
             val error = (sepetYemeklerResponse as ResourceState.Error)
             Log.d("SepetScreen", "SepetScreen: Error... $error")
@@ -96,73 +111,78 @@ fun SepetScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel(), navContr
     }
 
 
-
 }
 
 
-
 @Composable
-fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewModel,navController: NavController) {
+fun SepetListesi(
+    yemekler: List<SepetYemekler>,
+    yemeklerViewModel: YemeklerViewModel,
+    navController: NavController
+) {
 
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-       Row (
-              modifier = Modifier
-                  .padding(16.dp)
-                  .fillMaxWidth(),
-                  //.padding(top = 40.dp, bottom = 16.dp),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically
-       ){
-           // Back Button
-           IconButton(
-               onClick = {
-                   navController.navigate("home")
-               },
-               modifier = Modifier
-                   //.padding(, top = 8.dp)
-                   //.size(60.dp)
-                   .weight(1f)
-                   .wrapContentSize(Alignment.CenterStart)
-                   //.align(Alignment.CenterStart)
-                   .clip(RoundedCornerShape(8.dp)),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            //.padding(top = 40.dp, bottom = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Back Button
+            IconButton(
+                onClick = {
+                    navController.navigate("home")
+                },
+                modifier = Modifier
+                    //.padding(, top = 8.dp)
+                    //.size(60.dp)
+                    .weight(1f)
+                    .wrapContentSize(Alignment.CenterStart)
+                    //.align(Alignment.CenterStart)
+                    .clip(RoundedCornerShape(8.dp)),
 
 
-           ) {
-               Icon(
-                   Icons.Filled.Close,
-                   contentDescription = "",
-                   modifier = Modifier
-                       .size(40.dp),
-                   tint = Color.Gray
-               )
-           }
+                ) {
+                Icon(
+                    Icons.Filled.Close,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(40.dp),
+                    tint = Color.Gray
+                )
+            }
 
-           // Cart Text
-           Text(
-               modifier = Modifier
-                   .weight(1f),
-               //.border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+            // Cart Text
+            Text(
+                modifier = Modifier
+                    .weight(1f),
+                //.border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
 
 
-               text = "Cart",
-               style = MaterialTheme.typography.titleLarge,
-               textAlign = TextAlign.Center,
-               fontSize = 45.sp,
-               fontWeight = FontWeight.Bold,
+                text = "Cart",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                fontSize = 45.sp,
+                fontWeight = FontWeight.Bold,
 
-               //maxLines = 1,
-               //overflow = TextOverflow.Ellipsis
-           )
+                //maxLines = 1,
+                //overflow = TextOverflow.Ellipsis
+            )
 
-           Spacer(Modifier.width(40.dp).weight(1f)) // Butonun genişliği kadar
-       }
+            Spacer(
+                Modifier
+                    .width(40.dp)
+                    .weight(1f)) // Butonun genişliği kadar
+        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -172,7 +192,9 @@ fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewMo
             modifier = Modifier
                 //.fillMaxSize()
                 .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+                //.height(1500.dp) ////
+                .weight(1f)
+                .padding(start = 16.dp, end = 16.dp,)
                 //.background(Color.LightGray)
                 .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
 
@@ -182,46 +204,30 @@ fun SepetListesi(yemekler: List<SepetYemekler>,yemeklerViewModel: YemeklerViewMo
                 SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel)
             }
         }
-    }
-}
+
+        Spacer(modifier = Modifier.height(16.dp))
 
 
-/*
-@Composable
-fun ShoppingCartScreen(cartItems: List<SepetYemekler>, viewModel: YemeklerViewModel) {
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White),
-        verticalArrangement = Arrangement.Top // Align content to the top
-    ) {
+        // Total Price
         Text(
-            text = "Cart",
-            style = MaterialTheme.typography.headlineLarge, // Use a more appropriate header stylefontWeight = FontWeight.Bold,
-            textAlign = TextAlign.Center,
+            text = "Total Price: ${yemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 40.dp, bottom = 16.dp)
-                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-                .padding(8.dp) // Add padding inside the border
+                .padding(bottom = 32.dp)
+                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+            fontSize = 32.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
         )
 
-        LazyColumn( // Use LazyColumn for better performance with lists
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 16.dp)
-                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
-        ) {
-            items(cartItems.size) { cartItem -> // Iterate directly over the list
-                SepetKart(yemek = cartItems[cartItem], yemeklerViewModel = viewModel)
-            }
-        }
+
     }
+
+
 }
 
 
- */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -237,10 +243,15 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
         is ResourceState.Loading -> {
             Log.d("Sepete Ekleme", "Sepete Ekleme: Loading...")
         }
+
         is ResourceState.Success -> {
             val response = (response as ResourceState.Success).data
-            Log.d("Sepete Ekleme", "Sepete Ekleme: SUCCESS... success = ${response.success} | message = ${response.sepet_yemekler.size}")
+            Log.d(
+                "Sepete Ekleme",
+                "Sepete Ekleme: SUCCESS... success = ${response.success} | message = ${response.sepet_yemekler.size}"
+            )
         }
+
         is ResourceState.Error -> {
             val error = (response as ResourceState.Error)
             Log.d("Sepete Ekleme", "Sepete Ekleme: Error... $error")
@@ -253,10 +264,15 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
         is ResourceState.Loading -> {
             Log.d("SepetSilme", "SepetSilme: Loading...")
         }
+
         is ResourceState.Success -> {
             val response = (sepetYemekSilResponse as ResourceState.Success).data
-            Log.d("SepetSilme", "SepetSilme: SUCCESS... success = ${response.success} | message = ${response.message}")
+            Log.d(
+                "SepetSilme",
+                "SepetSilme: SUCCESS... success = ${response.success} | message = ${response.message}"
+            )
         }
+
         is ResourceState.Error -> {
             val error = (sepetYemekSilResponse as ResourceState.Error)
             Log.d("SepetSilme", "SepetSilme: Error... $error")
@@ -271,7 +287,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
             .height(130.dp),
-            //.wrapContentSize(),
+        //.wrapContentSize(),
 
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {} // TODO: KART ICINDEN DETAYA GIDILEBILIR
@@ -295,7 +311,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                         //TODO: (yemekDetayScreen(yemek.yemek_adi, yemek.yemek_fiyat, yemek.yemek_resim_adi, yemek.yemek_id))
 
                     },
-                    //.fillMaxWidth(),
+                //.fillMaxWidth(),
                 contentScale = ContentScale.Fit,
                 alignment = Alignment.CenterStart
 
@@ -313,7 +329,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
                 verticalArrangement = Arrangement.SpaceBetween,
 
-            ) {
+                ) {
                 // Yemek Adı
                 Text(
                     text = yemek.yemek_adi,
@@ -331,10 +347,10 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     text = "${yemek.yemek_fiyat} ₺",
                     color = Color.Red,
                     modifier = Modifier
-                    .fillMaxWidth(),
+                        .fillMaxWidth(),
                     //.weight(1f),
-                        //.align(Alignment.CenterVertically)
-                        //.padding(start = 8.dp),
+                    //.align(Alignment.CenterVertically)
+                    //.padding(start = 8.dp),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Center,
                 )
@@ -351,11 +367,11 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 )
 
             }
-            Column (
+            Column(
                 modifier = Modifier
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center,
-            ){
+            ) {
                 // Sepet Sil Butonu
                 IconButton(
                     onClick = {
@@ -369,7 +385,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                         //.padding(end = 8.dp)
                         .align(Alignment.CenterHorizontally),
 
-                ) {
+                    ) {
                     Icon(
                         painter = painterResource(id = R.drawable.garbage_bin),
                         contentDescription = "",
@@ -384,7 +400,6 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     text = "${yemek.yemek_fiyat * yemek.yemek_siparis_adet} ₺",
                     modifier = Modifier
                         .fillMaxWidth(),
-
 
 
                     //.padding(top = 4.dp),
