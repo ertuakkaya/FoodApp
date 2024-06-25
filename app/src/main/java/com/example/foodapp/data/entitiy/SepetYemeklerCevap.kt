@@ -1,5 +1,6 @@
 package com.example.foodapp.data.entitiy
 
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import java.io.Serializable
 
 data class SepetYemeklerCevap(var sepet_yemekler : List<SepetYemekler>,
@@ -11,5 +12,5 @@ data class SepetYemekler(
                             var yemek_resim_adi: String,
                             var yemek_fiyat: Int,
                             var yemek_siparis_adet: Int,
-                            var kullanici_adi: String = "ertugrul") : Serializable
+                            var kullanici_adi: String = AuthViewModel().getUserName()) : Serializable
 

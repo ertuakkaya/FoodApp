@@ -52,17 +52,18 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
 //onAddToCart : (Int) -> Unit
 @Composable
-fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel() ,navController: NavController) {
+fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hiltViewModel() ,navController: NavController,authViewModel: AuthViewModel) {
     //var quantity = 0
     var yemek_id = yemek.sepet_yemek_id
     var yemek_adi = yemek.yemek_adi
     var yemek_resim_adi = yemek.yemek_resim_adi
     var yemek_fiyat = yemek.yemek_fiyat
-    var kullanici_adi = yemek.kullanici_adi
+    var kullanici_adi = authViewModel.getUserName()
 
 
     var quantity by remember {
@@ -197,7 +198,7 @@ fun DetayScreen(yemek: SepetYemekler,yemeklerViewModel: YemeklerViewModel = hilt
                     yemek_resim_adi,
                     yemek_fiyat,
                     quantity,
-                    kullanici_adi
+                    authViewModel.getUserName()
                 )
             },
             modifier = Modifier

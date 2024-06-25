@@ -6,11 +6,14 @@ import com.example.foodapp.data.entitiy.SepetYemeklerCevap
 import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.data.entitiy.YemeklerCevap
 import com.example.foodapp.retrofit.YemeklerDao
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import retrofit2.Response
 import javax.inject.Inject
 
 
 class YemeklerDataSource @Inject constructor(var yemeklerDao : YemeklerDao) {
+
+    val autheViewModel = AuthViewModel()
 
     suspend fun tumYemekleriGetir() : Response<YemeklerCevap>{
         return yemeklerDao.tumYemekleriGetir()
@@ -29,19 +32,19 @@ class YemeklerDataSource @Inject constructor(var yemeklerDao : YemeklerDao) {
             yemek_resim_adi,
             yemek_fiyat,
             yemek_siparis_adet,
-            kullanici_adi
+            kullanici_adi = autheViewModel.getUserName()
         )
     }
 
 
     suspend fun sepettekiYemekleriGetir(kullanici_adi: String = "ertugrul"): Response<SepetYemeklerCevap>{
-        return yemeklerDao.sepettekiYemekleriGetir(kullanici_adi)
+        return yemeklerDao.sepettekiYemekleriGetir(kullanici_adi = autheViewModel.getUserName())
     }
 
 
     suspend fun sepettenYemekSil(sepet_yemek_id: Int,
                                  kullanici_adi: String = "ertugrul"): Response<CRUDCevap>{
-        return yemeklerDao.sepettenYemekSil(sepet_yemek_id,kullanici_adi)
+        return yemeklerDao.sepettenYemekSil(sepet_yemek_id, kullanici_adi = autheViewModel.getUserName())
     }
 
 

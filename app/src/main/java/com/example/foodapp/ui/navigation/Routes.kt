@@ -4,4 +4,5 @@ package com.example.foodapp.ui.navigation
 object Routes {
 
     const val HOME_SCREEN = "HOME"
+    const val LOGIN_SCREEN = "LOGIN"
 }

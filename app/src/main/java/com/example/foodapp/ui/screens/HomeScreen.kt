@@ -1,6 +1,7 @@
 package com.example.foodapp.ui.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,8 +31,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,6 +56,8 @@ import coil.compose.AsyncImage
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.ui.viewmodel.AuthState
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 
 /*
@@ -131,11 +136,32 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navContr
 @Composable
 fun HomeScreen(
     yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
+
+
+    // Firebase
+    val authState = authViewModel.authState.observeAsState()
+    LaunchedEffect(authState.value) {
+
+        // Kullanıcı Unauthanticaded durumunda ise login ekranına yönlendir
+        when(authState.value){
+          is AuthState.Unauthenticated -> navController.navigate("login")
+            else -> Unit
+
+        }
+
+
+    }
+
+
+
+    // HomeScreen'de kullanılacak değişkenler
     val yemeklerResponse by yemeklerViewModel.yemekler.collectAsState()
     var searchText by remember { mutableStateOf("") }
     var filteredYemekler by remember { mutableStateOf<List<Yemekler>>(emptyList()) }
+
 
     when (yemeklerResponse) {
         is ResourceState.Loading -> {
@@ -182,7 +208,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Yemek Listesi
-                    YemekListesi(yemekler = filteredYemekler, navController = navController)
+                    YemekListesi(yemekler = filteredYemekler, navController = navController, authViewModel = authViewModel)
                 }
             } else {
                 // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
@@ -222,7 +248,8 @@ fun HomeScreen(
 fun YemekKart(
     yemek: Yemekler,
     yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) { // TODO: viewmodel parametresi eklenecek
 
     val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
@@ -323,7 +350,9 @@ fun YemekKart(
                             yemek.yemek_adi,
                             yemek.yemek_resim_adi,
                             yemek.yemek_fiyat,
-                            1
+                            yemek_siparis_adet = 1,
+                            kullanici_adi = authViewModel.getUserName()
+
                         )
 
 
@@ -350,7 +379,7 @@ fun YemekKart(
 
 
 @Composable
-fun YemekListesi(yemekler: List<Yemekler>, navController: NavController) {
+fun YemekListesi(yemekler: List<Yemekler>, navController: NavController,authViewModel: AuthViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier
@@ -361,7 +390,7 @@ fun YemekListesi(yemekler: List<Yemekler>, navController: NavController) {
 
     ) {
         items(yemekler.size) { yemek ->
-            YemekKart(yemek = yemekler[yemek], navController = navController)
+            YemekKart(yemek = yemekler[yemek], navController = navController, authViewModel = authViewModel)
         }
     }
 }

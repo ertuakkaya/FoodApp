@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Row
@@ -34,8 +35,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +61,10 @@ import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entitiy.SepetYemekler
 import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.ui.viewmodel.AuthState
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -66,9 +72,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun SepetScreen(
     yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
     val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
+
+
+
 
     when (sepetYemeklerResponse) {
         is ResourceState.Loading -> {
@@ -96,7 +106,8 @@ fun SepetScreen(
                 SepetListesi(
                     yemekler = aggregatedYemekler,
                     yemeklerViewModel = yemeklerViewModel,
-                    navController = navController
+                    navController = navController,
+                    authViewModel = authViewModel
                 )////////
                 //ShoppingCartScreen(cartItems = aggregatedYemekler, viewModel =yemeklerViewModel )
             } else {
@@ -110,6 +121,50 @@ fun SepetScreen(
         }
     }
 
+    // Firebase
+    val authState = authViewModel.authState.observeAsState()
+    LaunchedEffect(authState.value) {
+
+        // Kullanıcı Unauthanticaded durumunda ise login ekranına yönlendir
+        when(authState.value){
+            is AuthState.Unauthenticated -> navController.navigate("login")
+            else -> Unit
+
+        }
+
+
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        IconButton(
+            onClick = {
+                
+                coroutineScope.launch {
+                    authViewModel.signOut()
+                    navController.navigate("login")
+                }
+
+
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .size(66.dp)
+                .background(Color.White, shape = RoundedCornerShape(28.dp))
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.basket),
+                contentDescription = "Sepet",
+                modifier = Modifier.size(30.dp),
+                tint = Color.Black
+            )
+        }
+    }
+
 
 }
 
@@ -118,7 +173,8 @@ fun SepetScreen(
 fun SepetListesi(
     yemekler: List<SepetYemekler>,
     yemeklerViewModel: YemeklerViewModel,
-    navController: NavController
+    navController: NavController,
+    authViewModel: AuthViewModel
 ) {
 
 
@@ -201,7 +257,8 @@ fun SepetListesi(
         ) {
 
             items(yemekler.size) { yemek ->
-                SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel)
+                val kullaniciAdi = authViewModel.getUserName()
+                SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel, authViewModel = AuthViewModel())
             }
         }
 
@@ -231,7 +288,7 @@ fun SepetListesi(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltViewModel()) {
+fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
 
     // coroutine scope
     val coroutineScope = rememberCoroutineScope()
@@ -376,7 +433,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
-                            yemeklerViewModel.sepettenYemekSil(yemek.sepet_yemek_id)
+                            yemeklerViewModel.sepettenYemekSil(sepet_yemek_id = yemek.sepet_yemek_id, kullanici_adi = authViewModel.getUserName() )
                         }
 
                     },
