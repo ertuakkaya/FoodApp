@@ -4,6 +4,7 @@ plugins {
 
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -69,6 +70,7 @@ dependencies {
     implementation(libs.androidx.material3)
     //implementation(libs.androidx.material3.android)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -108,6 +110,12 @@ dependencies {
 
     //coil --> resim yükleme kütüphanesi
     implementation("io.coil-kt:coil-compose:2.2.0")
+
+
+    // Google auth dependencies
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
+
+
 
 
 

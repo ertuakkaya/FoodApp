@@ -21,13 +21,6 @@ import javax.inject.Inject
 @HiltViewModel
 class YemeklerViewModel @Inject constructor(private val yemeklerRepository: YemeklerRepository) : ViewModel() {
 
-    /*
-    private val _yemekler = MutableLiveData<YemeklerCevap?>()
-    val yemekler: LiveData<YemeklerCevap?> = _yemekler
-
-    private val _sepetYemekler = MutableLiveData<SepetYemeklerCevap?>()
-    val sepetYemekler: LiveData<SepetYemeklerCevap?> = _sepetYemekler
-    */
 
     private val _yemekler : MutableStateFlow<ResourceState<YemeklerCevap>> = MutableStateFlow(ResourceState.Loading())
     val yemekler : StateFlow<ResourceState<YemeklerCevap>> = _yemekler
@@ -36,28 +29,7 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
     private val _sepeteYemekEkle : MutableStateFlow<ResourceState<CRUDCevap>> = MutableStateFlow(ResourceState.Loading())
     val sepeteYemekEkle: StateFlow<ResourceState<CRUDCevap>> = _sepeteYemekEkle
 
-    /*
-    private val _sepetYemekler : MutableStateFlow<ResourceState<SepetYemeklerCevap>> = MutableStateFlow(ResourceState.Loading())
-    val sepetYemekler : StateFlow<ResourceState<SepetYemeklerCevap>> = _sepetYemekler
-    */
 
-    /*
-    fun tumYemekleriGetir() = liveData(Dispatchers.IO) {
-        emit(yemeklerRepository.tumYemekleriGetir())
-    }
-
-    fun sepeteYemekEkle(yemek_adi: String, yemek_resim_adi: String, yemek_fiyat: Int, yemek_siparis_adet: Int) = liveData(Dispatchers.IO) {
-        emit(yemeklerRepository.sepeteYemekEkle(yemek_adi, yemek_resim_adi, yemek_fiyat, yemek_siparis_adet))
-    }
-
-    fun sepettenYemekSil(sepet_yemek_id: Int) = liveData(Dispatchers.IO) {
-        emit(yemeklerRepository.sepettenYemekSil(sepet_yemek_id))
-    }
-
-    fun sepettekiYemekleriGetir() = liveData(Dispatchers.IO) {
-        emit(yemeklerRepository.sepettekiYemekleriGetir())
-    }
-    */
 
     init {
         tumYemekleriGetir()
@@ -108,33 +80,9 @@ class YemeklerViewModel @Inject constructor(private val yemeklerRepository: Yeme
     }
 
 
-    /*
-    fun tumYemekleriGetir() {
-        viewModelScope.launch {
-            val response = yemeklerRepository.tumYemekleriGetir()
-            _yemekler.postValue(response)
-        }
-    }
+    //Firebase
 
-    fun sepeteYemekEkle(yemek_adi: String, yemek_resim_adi: String, yemek_fiyat: Int, yemek_siparis_adet: Int) {
-        viewModelScope.launch {
-            yemeklerRepository.sepeteYemekEkle(yemek_adi, yemek_resim_adi, yemek_fiyat, yemek_siparis_adet)
-            sepettekiYemekleriGetir()
-        }
-    }
 
-    fun sepettenYemekSil(sepet_yemek_id: Int) {
-        viewModelScope.launch {
-            yemeklerRepository.sepettenYemekSil(sepet_yemek_id)
-            sepettekiYemekleriGetir()
-        }
-    }
 
-    fun sepettekiYemekleriGetir() {
-        viewModelScope.launch {
-            val response = yemeklerRepository.sepettekiYemekleriGetir()
-            _sepetYemekler.postValue(response)
-        }
-    }
-    */
+
 }
