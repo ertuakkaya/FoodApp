@@ -135,35 +135,9 @@ fun SepetScreen(
 
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        IconButton(
-            onClick = {
-                
-                coroutineScope.launch {
-                    authViewModel.signOut()
-                    navController.navigate("login")
-                }
 
 
-            },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(66.dp)
-                .background(Color.White, shape = RoundedCornerShape(28.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.basket),
-                contentDescription = "Sepet",
-                modifier = Modifier.size(30.dp),
-                tint = Color.Black
-            )
-        }
-    }
+
 
 
 }
@@ -265,18 +239,61 @@ fun SepetListesi(
         Spacer(modifier = Modifier.height(16.dp))
 
 
-        // Total Price
-        Text(
-            text = "Total Price: ${yemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
-
+        Row (
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 32.dp)
+                //.fillMaxWidth()
+                //.padding(bottom = 32.dp)
+                .size(400.dp, 60.dp)
+                .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
                 .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Medium,
-            textAlign = TextAlign.Center,
-        )
+
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            // Total Price
+            Text(
+                text = "Total Price: ${yemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+                modifier = Modifier
+
+                    .weight(1f),
+                    //.border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Medium,
+                textAlign = TextAlign.Center,
+            )
+            val coroutineScope = rememberCoroutineScope()
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                IconButton(
+                    onClick = {
+
+                        coroutineScope.launch {
+                            authViewModel.signOut()
+                            navController.navigate("login")
+                        }
+
+
+                    },
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(4.dp)
+                        .fillMaxSize()
+                        //.background(Color.Gray, shape = MaterialTheme.shapes.extraLarge),
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.sign_out_squre_fill),
+                        contentDescription = "sign out",
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        //tint = Color.Black
+                    )
+                }
+            }
+        }
+
 
 
     }
