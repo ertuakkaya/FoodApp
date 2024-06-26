@@ -40,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -230,7 +231,7 @@ fun HomeScreen(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
                 .size(66.dp)
-                .background(Color.White, shape = RoundedCornerShape(28.dp))
+                .background(Brush.verticalGradient( listOf(Color.LightGray, Color.DarkGray)), shape = RoundedCornerShape(40.dp))
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.basket),

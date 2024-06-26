@@ -219,12 +219,15 @@ fun SepetListesi(
         // Cart Items
         LazyVerticalGrid(
             columns = GridCells.Fixed(1),
+
             modifier = Modifier
+
                 //.fillMaxSize()
                 .fillMaxWidth()
                 //.height(1500.dp) ////
                 .weight(1f)
                 .padding(start = 16.dp, end = 16.dp,)
+                //.background(Brush.verticalGradient(listOf(Color.White, Color.LightGray)))
                 //.background(Color.LightGray)
                 .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
 
@@ -252,7 +255,7 @@ fun SepetListesi(
         ){
             // Total Price
             Text(
-                text = "Total Price: ${yemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+                text = "Total\nPrice: ${yemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
                 modifier = Modifier
 
                     .weight(1f),
