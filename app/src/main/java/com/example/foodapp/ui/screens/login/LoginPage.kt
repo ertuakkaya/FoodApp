@@ -93,6 +93,7 @@ fun LoginPage(
 
         Button(onClick = {
             authViewModel.login(email,password)
+
         },
             enabled = authState.value != AuthState.Loading
         ) {

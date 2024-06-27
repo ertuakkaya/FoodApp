@@ -12,17 +12,23 @@ import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +36,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -134,6 +141,7 @@ fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navContr
  */
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
@@ -188,8 +196,22 @@ fun HomeScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(top = 32.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
+                        .padding(top = 1.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
                 ) {
+
+                    TopAppBar(
+                        title = {
+                            Text(
+                                text = "Food",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 40.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .background(Color.LightGray)
+                            .wrapContentHeight(),
+                    )
+
                     // Arama Kısmı
                     OutlinedTextField(
                         value = searchText,
@@ -209,8 +231,90 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     // Yemek Listesi
-                    YemekListesi(yemekler = filteredYemekler, navController = navController, authViewModel = authViewModel)
-                }
+                    Box(modifier = Modifier.size(400.dp, 620.dp)) {
+                        // Yemek Listesi
+                        YemekListesi(yemekler = filteredYemekler, navController = navController, authViewModel = authViewModel)
+
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+
+                    // BottomAppBar
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.LightGray)
+                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp)),
+                        contentAlignment = Alignment.Center
+
+
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxHeight(),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Sepete Git
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("home")
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxSize()
+
+                            ) {
+
+                                Icon(
+                                    imageVector = Icons.Filled.Home,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(100.dp),
+
+
+                                )
+                            }
+                            // Sepete Git
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("sepet")
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxSize()
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.List,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(100.dp),
+
+
+                                )
+                            }
+
+                            // Sepete Git
+                            IconButton(
+                                onClick = {
+                                    navController.navigate("account")
+                                },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(1f)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.AccountCircle,
+                                    contentDescription = "",
+                                    modifier = Modifier.size(100.dp),
+
+
+                                )
+                            }
+                        }// BottomAppBar Row
+                    }
+
+                }// Column
+
             } else {
                 // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
             }
@@ -222,25 +326,7 @@ fun HomeScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        IconButton(
-            onClick = { navController.navigate("sepet") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(66.dp)
-                .background(Brush.verticalGradient( listOf(Color.LightGray, Color.DarkGray)), shape = RoundedCornerShape(40.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.basket),
-                contentDescription = "Sepet",
-                modifier = Modifier.size(30.dp),
-                tint = Color.Black
-            )
-        }
-    }
+
 }
 
 

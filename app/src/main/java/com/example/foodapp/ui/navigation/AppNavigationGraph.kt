@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.foodapp.data.entitiy.SepetYemekler
+import com.example.foodapp.ui.screens.AccountScreen
 import com.example.foodapp.ui.screens.DetayScreen
 import com.example.foodapp.ui.screens.HomeScreen
 import com.example.foodapp.ui.screens.SepetScreen
@@ -66,6 +67,11 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
                 ),navController = navController,authViewModel = authViewModel
 
             )
+        }
+
+        composable("account") {
+            AccountScreen(authViewModel = authViewModel)
+
         }
     }
 

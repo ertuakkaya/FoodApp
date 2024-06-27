@@ -27,6 +27,7 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Authenticated
         }
 
+
     }
 
     // Kullanıcının giriş yapmasını sağlayan fonksiyon
@@ -79,6 +80,18 @@ class AuthViewModel : ViewModel() {
 
     }
 
+    // send a password reset email
+    fun sendPasswordResetEmail(email: String) {
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _authState.value = AuthState.Authenticated
+                } else {
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
+                }
+            }
+    }
+
 
     // Kullanıcının çıkış yapmasını sağlayan fonksiyon
     fun signOut(){
@@ -91,6 +104,10 @@ class AuthViewModel : ViewModel() {
     fun getUserName() : String{
         return auth.currentUser?.email ?: ""
     }
+
+
+
+
 
 
 }
