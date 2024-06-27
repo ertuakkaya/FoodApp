@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +27,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
@@ -35,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -144,6 +147,7 @@ fun SepetScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SepetListesi(
     yemekler: List<SepetYemekler>,
@@ -160,60 +164,39 @@ fun SepetListesi(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            //.padding(top = 40.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Back Button
-            IconButton(
-                onClick = {
-                    navController.navigate("home")
-                },
-                modifier = Modifier
-                    //.padding(, top = 8.dp)
-                    //.size(60.dp)
-                    .weight(1f)
-                    .wrapContentSize(Alignment.CenterStart)
-                    //.align(Alignment.CenterStart)
-                    .clip(RoundedCornerShape(8.dp)),
 
-
-                ) {
-                Icon(
-                    Icons.Filled.Close,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(40.dp),
-                    tint = Color.Gray
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Cart",
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 40.sp
                 )
-            }
+            },
+            navigationIcon = {
+                IconButton(
+                    onClick = {
+                        navController.navigate("home")
+                    },
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        //.background(Color.Gray)
+                        .size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = Modifier
+                            .size(40.dp)
+                    )
+                }
+            },
+            modifier = Modifier
 
-            // Cart Text
-            Text(
-                modifier = Modifier
-                    .weight(1f),
-                //.border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                .wrapContentHeight(),
+        )
 
-
-                text = "Cart",
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                fontSize = 45.sp,
-                fontWeight = FontWeight.Bold,
-
-                //maxLines = 1,
-                //overflow = TextOverflow.Ellipsis
-            )
-
-            Spacer(
-                Modifier
-                    .width(40.dp)
-                    .weight(1f)) // Butonun genişliği kadar
-        }
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -243,6 +226,7 @@ fun SepetListesi(
         Spacer(modifier = Modifier.height(16.dp))
 
 
+        // Row Bottom Bar with Total Price and Sign Out Button
         Row (
             modifier = Modifier
                 //.fillMaxWidth()
@@ -296,7 +280,7 @@ fun SepetListesi(
                     )
                 }
             }
-        }
+        }// Row Bottom Bar with Total Price and Sign Out Button
 
 
 

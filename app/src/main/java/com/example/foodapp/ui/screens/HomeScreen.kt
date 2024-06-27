@@ -161,7 +161,6 @@ fun HomeScreen(
 
         }
 
-
     }
 
 
@@ -199,18 +198,18 @@ fun HomeScreen(
                         .padding(top = 1.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
                 ) {
 
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Food",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 40.sp
-                            )
-                        },
-                        modifier = Modifier
-                            .background(Color.LightGray)
-                            .wrapContentHeight(),
-                    )
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 36.dp)
+                    ){
+                        Text(
+                            text = "Food",
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 40.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(6.dp))
 
                     // Arama Kısmı
                     OutlinedTextField(
@@ -244,7 +243,7 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.LightGray)
+                            //.background(Color.LightGray)
                             .border(1.dp, Color.Black, RoundedCornerShape(8.dp)),
                         contentAlignment = Alignment.Center
 
@@ -415,8 +414,8 @@ fun YemekKart(
             ) {
                 // Yemek Fiyatı
                 Text(
-                    text = "${yemek.yemek_fiyat} TL",
-                    color = Color.Red,
+                    text = "${yemek.yemek_fiyat} ₺",
+                    //color = Color.Red,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
