@@ -111,6 +111,10 @@ dependencies {
     //coil --> resim yükleme kütüphanesi
     implementation("io.coil-kt:coil-compose:2.2.0")
 
+    // lottie animation
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+
 
 
 

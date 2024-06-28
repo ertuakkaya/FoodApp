@@ -93,6 +93,39 @@ class AuthViewModel : ViewModel() {
     }
 
 
+    // email verification
+    fun sendEmailVerification() {
+        auth.currentUser?.sendEmailVerification()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _authState.value = AuthState.Authenticated
+                } else {
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
+                }
+            }
+    }
+
+    // get user's email
+    fun getUserEmail() : String {
+        return auth.currentUser?.email ?: ""
+    }
+
+
+
+
+    // delete user
+    fun deleteUser() {
+        auth.currentUser?.delete()
+            ?.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _authState.value = AuthState.Authenticated
+                } else {
+                    _authState.value = AuthState.Error(task.exception?.message ?: "Something went wrong")
+                }
+            }
+    }
+
+
     // Kullanıcının çıkış yapmasını sağlayan fonksiyon
     fun signOut(){
         auth.signOut()

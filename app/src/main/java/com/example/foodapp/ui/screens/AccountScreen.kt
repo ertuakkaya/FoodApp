@@ -30,6 +30,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -57,11 +58,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountScreen(authViewModel: AuthViewModel) {
+fun AccountScreen(authViewModel: AuthViewModel,navController: NavController) {
 
 
     var email by remember { mutableStateOf("") }
@@ -84,7 +86,7 @@ fun AccountScreen(authViewModel: AuthViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
+        // Top App Bar
         TopAppBar(
             title = {
                 Text(text = "Account Settings", fontSize = 20.sp)
@@ -93,24 +95,37 @@ fun AccountScreen(authViewModel: AuthViewModel) {
                 .background(Color.LightGray)
                 .fillMaxWidth(),
             navigationIcon = {
-                IconToggleButton(
-                    checked = false,
-                    onCheckedChange = { /*TODO*/ }
+                IconButton(
+                    onClick = {
+                        navController.navigate("home")
+                    }
                 ) {
                     Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+
                 }
             },
 
 
         )
 
-
+        // Account Avatar Icon
         Icon(
             imageVector = Icons.Filled.AccountCircle,
             contentDescription = ""
             , modifier = Modifier
                 .size(250.dp)
                 .padding(bottom = 16.dp)
+        )
+
+
+        Text(text = "Please write yout mail adress to change your password.",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic,
+            textAlign = TextAlign.Center
         )
 
         OutlinedTextField(
@@ -124,60 +139,24 @@ fun AccountScreen(authViewModel: AuthViewModel) {
 
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = currentPassword,
-            onValueChange = { currentPassword = it },
-            label = { Text("Current Password") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp)
-
-        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(
-            value = newPassword,
-            onValueChange = { newPassword = it },
-            label = { Text("New Password") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp)
 
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Confirm New Password") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-                .padding(start = 8.dp, end = 8.dp)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-
+        // Send Password Reset Email Button
         Button(
             onClick = {
                 val email = authViewModel.getUserName()
                 authViewModel.sendPasswordResetEmail(email)
             },
+            enabled = if ( email == authViewModel.getUserEmail() ) true else false,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
 
         ){
             Text(
-                text= "Save Changes",
+                text= "Send Password Reset Email",
                 modifier = Modifier
 
 

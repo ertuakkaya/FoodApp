@@ -70,7 +70,7 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
         }
 
         composable("account") {
-            AccountScreen(authViewModel = authViewModel)
+            AccountScreen(authViewModel = authViewModel,navController = navController)
 
         }
     }
