@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -59,6 +60,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,8 +106,6 @@ fun AccountScreen(authViewModel: AuthViewModel,navController: NavController) {
 
                 }
             },
-
-
         )
 
         // Account Avatar Icon
@@ -140,9 +140,6 @@ fun AccountScreen(authViewModel: AuthViewModel,navController: NavController) {
         )
 
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-
         // Send Password Reset Email Button
         Button(
             onClick = {
@@ -154,9 +151,30 @@ fun AccountScreen(authViewModel: AuthViewModel,navController: NavController) {
                 .fillMaxWidth()
                 .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
 
-        ){
+            ){
             Text(
                 text= "Send Password Reset Email",
+                modifier = Modifier
+
+
+            )
+        }
+
+
+
+        Button(
+            onClick = {
+                authViewModel.signOut()
+                navController.navigate("login")
+            },
+            enabled = if ( authViewModel.authState.value == AuthState.Authenticated ) true else false,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
+
+        ){
+            Text(
+                text= "Log Out",
                 modifier = Modifier
 
 
