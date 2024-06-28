@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 
 import androidx.compose.material3.Button
@@ -28,6 +29,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.foodapp.R
 import com.example.foodapp.ui.viewmodel.AuthState
 
 @Composable
@@ -48,10 +54,13 @@ fun LoginPage(
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
 
-    // 
+
+
+
+    // Launch effect, bu sayfa açıldığında çalışacak
     LaunchedEffect(authState.value) {
         when(authState.value){
-            // TODO: BURAYA LOGIN SCREEN EKLENECEK
+
             is AuthState.Authenticated -> navController.navigate("home")
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
