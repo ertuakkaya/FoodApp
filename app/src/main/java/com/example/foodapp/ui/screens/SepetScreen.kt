@@ -171,35 +171,35 @@ fun SepetScreen(
                     ) {
                         // Total Price
                         Text(
-                            text = "Total\nPrice: ${aggregatedYemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+                            text = "Total Price: ${aggregatedYemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
                             modifier = Modifier.weight(1f),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Medium,
                             textAlign = TextAlign.Center,
                         )
                         val coroutineScope = rememberCoroutineScope()
-                        Box(
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    coroutineScope.launch {
-                                        authViewModel.signOut()
-                                        navController.navigate("login")
-                                    }
-                                },
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .padding(4.dp)
-                                    .fillMaxSize()
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.sign_out_squre_fill),
-                                    contentDescription = "sign out",
-                                    modifier = Modifier.fillMaxSize()
-                                )
-                            }
-                        }
+//                        Box(
+//                            modifier = Modifier.weight(1f)
+//                        ) {
+//                            IconButton(
+//                                onClick = {
+//                                    coroutineScope.launch {
+//                                        authViewModel.signOut()
+//                                        navController.navigate("login")
+//                                    }
+//                                },
+//                                modifier = Modifier
+//                                    .align(Alignment.Center)
+//                                    .padding(4.dp)
+//                                    .fillMaxSize()
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(id = R.drawable.sign_out_squre_fill),
+//                                    contentDescription = "sign out",
+//                                    modifier = Modifier.fillMaxSize()
+//                                )
+//                            }
+//                        }
                     } // Row Bottom Bar with Total Price and Sign Out Button
                 }// Column App Bar, Sepet Listesi, Total Price and LogOut
 
@@ -300,47 +300,47 @@ fun SepetScreen(
                 // Total Price and LogOut
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Row Bottom Bar with Total Price and Sign Out Button
-                Row(
-                    modifier = Modifier
-                        .size(400.dp, 60.dp)
-                        .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
-                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Total Price
-                    Text(
-                        text = "Total\nPrice: 0 ₺",
-                        modifier = Modifier.weight(1f),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium,
-                        textAlign = TextAlign.Center,
-                    )
-                    val coroutineScope = rememberCoroutineScope()
-                    Box(
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        IconButton(
-                            onClick = {
-                                coroutineScope.launch {
-                                    authViewModel.signOut()
-                                    navController.navigate("login")
-                                }
-                            },
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(4.dp)
-                                .fillMaxSize()
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.sign_out_squre_fill),
-                                contentDescription = "sign out",
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                    }
-                } // Row Bottom Bar with Total Price and Sign Out Button
+//                // Row Bottom Bar with Total Price and Sign Out Button
+//                Row(
+//                    modifier = Modifier
+//                        .size(400.dp, 60.dp)
+//                        .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
+//                        .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+//                    horizontalArrangement = Arrangement.SpaceEvenly,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    // Total Price
+//                    Text(
+//                        text = "Total Price: 0 ₺",
+//                        modifier = Modifier.weight(1f),
+//                        fontSize = 20.sp,
+//                        fontWeight = FontWeight.Medium,
+//                        textAlign = TextAlign.Center,
+//                    )
+//                    val coroutineScope = rememberCoroutineScope()
+//                    Box(
+//                        modifier = Modifier.weight(1f)
+//                    ) {
+//                        IconButton(
+//                            onClick = {
+//                                coroutineScope.launch {
+//                                    authViewModel.signOut()
+//                                    navController.navigate("login")
+//                                }
+//                            },
+//                            modifier = Modifier
+//                                .align(Alignment.Center)
+//                                .padding(4.dp)
+//                                .fillMaxSize()
+//                        ) {
+//                            Icon(
+//                                painter = painterResource(id = R.drawable.sign_out_squre_fill),
+//                                contentDescription = "sign out",
+//                                modifier = Modifier.fillMaxSize()
+//                            )
+//                        }
+//                    }
+                //} // Row Bottom Bar with Total Price and Sign Out Button
             }// Column App Bar, Sepet Listesi, Total Price and LogOut
 
         }
