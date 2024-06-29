@@ -46,52 +46,66 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
 
         composable("login") {
 
-            // lottie animation
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.auth_lottie))
-            LottieAnimation(
-                composition = composition,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                //iterations = LottieConstants.IterateForever,
-                reverseOnRepeat = true
-            )
 
-            LoginPage(
-                modifier = modifier,
-                navController = navController,
-                authViewModel = authViewModel
-            )
-            //TODO("BURAYA LOGIN SCREEN EKLENECEK")
+            // Set isLoading to true every time we navigate to this screen
+            LaunchedEffect(key1 = "login") {
+                isLoading.value = true
+            }
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (isLoading.value) {
+                    // lottie animation
+                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie))
+                    LottieAnimation(
+                        composition = composition,
+                        modifier = Modifier.fillMaxSize(),
+                        iterations = LottieConstants.IterateForever,
+                        reverseOnRepeat = true
+                    )
+                } else {
+                    LoginPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
+                    //viewModel.sepettekiYemekleriGetir()
+                }
+            }
+
+            LaunchedEffect(key1 = "login") {
+                delay(1000) // Adjust this delay to match your loading time
+                isLoading.value = false
+            }
 
         }
 
         composable("signup") {
 
-            // lottie animation
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.auth_lottie))
-            LottieAnimation(
-                composition = composition,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                iterations = LottieConstants.IterateForever,
-                reverseOnRepeat = true
-            )
+            // Set isLoading to true every time we navigate to this screen
+            LaunchedEffect(key1 = "signup") {
+                isLoading.value = true
+            }
 
-            SignUpPage(
-                modifier = modifier,
-                navController = navController,
-                authViewModel = authViewModel
-            )
-            //TODO("BURAYA SignUp SCREEN EKLENECEK")
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (isLoading.value) {
+                    // lottie animation
+                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie))
+                    LottieAnimation(
+                        composition = composition,
+                        modifier = Modifier.fillMaxSize(),
+                        iterations = LottieConstants.IterateForever,
+                        reverseOnRepeat = true
+                    )
+                } else {
+                    SignUpPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
+                }
+            }
+
+            LaunchedEffect(key1 = "signup") {
+                delay(1000) // Adjust this delay to match your loading time
+                isLoading.value = false
+            }
 
         }
 
         composable("home") {
-            HomeScreen(
-                yemeklerViewModel = viewModel,
-                navController = navController,
-                authViewModel = authViewModel
-            )
+            HomeScreen(yemeklerViewModel = viewModel, navController = navController, authViewModel = authViewModel)
         }
 
         composable("sepet") {

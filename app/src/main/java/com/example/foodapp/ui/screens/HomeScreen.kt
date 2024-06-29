@@ -61,6 +61,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.airbnb.lottie.LottieAnimationView
+import com.airbnb.lottie.LottieComposition
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entitiy.Yemekler
@@ -191,7 +197,6 @@ fun HomeScreen(
                         it.yemek_adi.contains(searchText, ignoreCase = true)
                     }
                 }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -336,30 +341,24 @@ fun YemekKart(
     yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
     navController: NavController,
     authViewModel: AuthViewModel
-) { // TODO: viewmodel parametresi eklenecek
-
+) {
     val response by yemeklerViewModel.sepeteYemekEkle.collectAsState()
 
+    var isAddingToCart by remember { mutableStateOf(false) }
+
     when (response) {
-
         is ResourceState.Loading -> {
-
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: Loading...")
-
+            Log.d("Sepete Ekleme", "Sepete Ekleme: Loading...")
         }
-
         is ResourceState.Success -> {
             val response = (response as ResourceState.Success).data
-            Log.d(
-                "Sepete Ekeleme",
-                "Sepete Ekeleme: SUCCESS... success = ${response.success} | message = ${response.message}"
-            )
-
+            Log.d("Sepete Ekleme", "Sepete Ekleme: SUCCESS... success = ${response.success} | message = ${response.message}")
+            isAddingToCart = false
         }
-
         is ResourceState.Error -> {
             val error = (response as ResourceState.Error)
-            Log.d("Sepete Ekeleme", "Sepete Ekeleme: Error... $error")
+            Log.d("Sepete Ekleme", "Sepete Ekleme: Error... $error")
+            isAddingToCart = false
         }
     }
 
@@ -370,91 +369,72 @@ fun YemekKart(
             .wrapContentSize(),
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {
-            // Tıklama olayında, yemeğin bilgilerini DetayScreen'e geçirin
             navController.navigate("detay/${yemek.yemek_adi}/${yemek.yemek_fiyat}/${yemek.yemek_resim_adi}/${yemek.yemek_id}")
         }
-
     ) {
         Column(
             modifier = Modifier.padding(8.dp)
         ) {
-            // Yemek Resmi
             AsyncImage(
                 model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
                 contentDescription = yemek.yemek_adi,
                 modifier = Modifier
                     .height(150.dp)
                     .fillMaxWidth(),
-
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Yemek Adı
             Text(
                 text = yemek.yemek_adi,
                 modifier = Modifier
-                    //.fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .size(width = 150.dp, height = 30.dp),
-
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold
-
-
             )
-            // Yemek Fiyatı ve Sepete Ekle Butonu
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-
                 horizontalArrangement = Arrangement.SpaceBetween
-
             ) {
-                // Yemek Fiyatı
                 Text(
                     text = "${yemek.yemek_fiyat} ₺",
-                    //color = Color.Red,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterVertically)
-                        //.border(1.dp, Color.Red, RectangleShape)
                         .padding(start = 8.dp),
                     fontSize = 20.sp
-
                 )
-
-                // Sepete Ekle Butonu
                 IconButton(
                     onClick = {
-                        // TODO: Sepete Ekle api çağrısı yapılacak
-                        // TODO: Sepete ekleme animasyonunu getir
-                        // TODO: viewmodelden sepete ekle fonksiyonu çağrılacak ////
-
+                        isAddingToCart = true
                         yemeklerViewModel.sepeteYemekEkle(
                             yemek.yemek_adi,
                             yemek.yemek_resim_adi,
                             yemek.yemek_fiyat,
                             yemek_siparis_adet = 1,
                             kullanici_adi = authViewModel.getUserName()
-
                         )
-
-
                     },
-                    modifier = Modifier
-                        .wrapContentSize()
-                    //.size(25.dp),
-
-
-                )
-                {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add_square),
-                        contentDescription = "",
-                        modifier = Modifier.fillMaxSize()
-                    )
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    if (isAddingToCart) {
+                        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cart_added_lottie))
+                        LottieAnimation(
+                            composition = composition,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Fit,
+                            //speed = 0.05f,
+                            //iterations = LottieConstants.IterateForever
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(id = R.drawable.add_square),
+                            contentDescription = "",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
 
 
@@ -462,6 +442,7 @@ fun YemekKart(
         }
     }
 }
+
 
 
 @Composable
