@@ -4,16 +4,18 @@ FoodApp is a modern Android application for food ordering, built with Jetpack Co
 
 ![App Screenshot](https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss1.jpg)
 
+## Screenshots
+
 <table>
   <tr>
-    <td><img src="[https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss1.jpg](https://github.com/ertuakkaya/FoodApp/blob/master/Screenshots/Screenshot_20240711_193003.png)" width="200"/></td>
-    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss2.jpg" width="200"/></td>
-    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss3.jpg" width="200"/></td>
+    <td><img src="Screenshots/home_screen.png" width="200" alt="Home Screen"/></td>
+    <td><img src="Screenshots/food_detail_screen.png" width="200" alt="Food Detail Screen"/></td>
+    <td><img src="Screenshots/cart_screen.png" width="200" alt="Cart Screen"/></td>
   </tr>
   <tr>
-    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss4.jpg" width="200"/></td>
-    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss5.jpg" width="200"/></td>
-    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss6.jpg" width="200"/></td>
+    <td><img src="Screenshots/login_screen.png" width="200" alt="Login Screen"/></td>
+    <td><img src="Screenshots/register_screen.png" width="200" alt="Register Screen"/></td>
+    <td><img src="Screenshots/profile_screen.png" width="200" alt="Profile Screen"/></td>
   </tr>
 </table>
 
