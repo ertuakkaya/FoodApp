@@ -2,7 +2,7 @@
 
 FoodApp is a modern Android application for food ordering, built with Jetpack Compose and following clean architecture principles. It showcases the use of latest Android development technologies and best practices.
 
-![App Screenshot](https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss1.jpg)
+
 
 ## Screenshots
 
