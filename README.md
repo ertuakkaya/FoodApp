@@ -4,6 +4,20 @@ FoodApp is a modern Android application for food ordering, built with Jetpack Co
 
 ![App Screenshot](https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss1.jpg)
 
+<table>
+  <tr>
+    <td><img src="[https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss1.jpg](https://github.com/ertuakkaya/FoodApp/blob/master/Screenshots/Screenshot_20240711_193003.png)" width="200"/></td>
+    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss2.jpg" width="200"/></td>
+    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss3.jpg" width="200"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss4.jpg" width="200"/></td>
+    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss5.jpg" width="200"/></td>
+    <td><img src="https://github.com/ertuakkaya/FoodApp/raw/main/app/src/main/res/drawable/ss6.jpg" width="200"/></td>
+  </tr>
+</table>
+
+
 ## Features
 
 - Browse a variety of food items
