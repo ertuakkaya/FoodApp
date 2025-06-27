@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.navigation.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,107 +81,114 @@ fun AccountScreen(authViewModel: AuthViewModel,navController: NavController) {
         return false
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.SpaceAround,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "Account Settings", fontSize = 20.sp)
+                },
+                modifier = Modifier
+                    .background(Color.LightGray)
+                    .fillMaxWidth(),
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("home")
+                        }
+                    ) {
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
 
-        // Top App Bar
-        TopAppBar(
-            title = {
-                Text(text = "Account Settings", fontSize = 20.sp)
-            },
-            modifier = Modifier
-                .background(Color.LightGray)
-                .fillMaxWidth(),
-            navigationIcon = {
-                IconButton(
-                    onClick = {
-                        navController.navigate("home")
                     }
-                ) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
-
-                }
-            },
-        )
-
-        // Account Avatar Icon
-        Icon(
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = ""
-            , modifier = Modifier
-                .size(250.dp)
-                .padding(bottom = 16.dp)
-        )
-
-
-        Text(text = "Please write yout mail adress to change your password.",
+                },
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Italic,
-            textAlign = TextAlign.Center
-        )
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceAround,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp)
-
-        )
+            // Account Avatar Icon
+            Icon(
+                imageVector = Icons.Filled.AccountCircle,
+                contentDescription = ""
+                , modifier = Modifier
+                    .size(250.dp)
+                    .padding(bottom = 16.dp)
+            )
 
 
-        // Send Password Reset Email Button
-        Button(
-            onClick = {
-                val email = authViewModel.getUserName()
-                authViewModel.sendPasswordResetEmail(email)
-            },
-            enabled = if ( email == authViewModel.getUserEmail() ) true else false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
+            Text(text = "Please write yout mail adress to change your password.",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                textAlign = TextAlign.Center
+            )
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp)
+
+            )
+
+
+            // Send Password Reset Email Button
+            Button(
+                onClick = {
+                    val email = authViewModel.getUserName()
+                    authViewModel.sendPasswordResetEmail(email)
+                },
+                enabled = if ( email == authViewModel.getUserEmail() ) true else false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
+
+                ){
+                Text(
+                    text= "Send Password Reset Email",
+                    modifier = Modifier
+
+
+                )
+            }
+
+
+
+            Button(
+                onClick = {
+                    authViewModel.signOut()
+                    navController.navigate("login")
+                },
+                enabled = if ( authViewModel.authState.value == AuthState.Authenticated ) true else false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
 
             ){
-            Text(
-                text= "Send Password Reset Email",
-                modifier = Modifier
+                Text(
+                    text= "Log Out",
+                    modifier = Modifier
 
 
-            )
+                )
+            }
+
         }
-
-
-
-        Button(
-            onClick = {
-                authViewModel.signOut()
-                navController.navigate("login")
-            },
-            enabled = if ( authViewModel.authState.value == AuthState.Authenticated ) true else false,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),
-
-        ){
-            Text(
-                text= "Log Out",
-                modifier = Modifier
-
-
-            )
-        }
-
     }
 
 

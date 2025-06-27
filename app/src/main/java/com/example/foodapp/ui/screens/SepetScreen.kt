@@ -30,7 +30,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.BottomAppBar
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +39,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Scaffold
+
+
+
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -74,6 +79,7 @@ import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
+import com.example.foodapp.ui.navigation.BottomNavigationBar
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -88,96 +94,103 @@ fun SepetScreen(
 ) {
     val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
 
-    when (sepetYemeklerResponse) {
-        is ResourceState.Loading -> {
-            val loading = (sepetYemeklerResponse as ResourceState.Loading)
-            Log.d("SepetScreen", "SepetScreen: Loading... $loading")
-        }
-
-        is ResourceState.Success -> {
-            val response = (sepetYemeklerResponse as ResourceState.Success).data
-            Log.d(
-                "SepetScreen",
-                "SepetScreen: SUCCESS... success = ${response.success} | yemekler.size = ${response.sepet_yemekler.size}"
-            )
-            if (response.sepet_yemekler.isNotEmpty()) {
-                val aggregatedYemekler = response.sepet_yemekler.groupBy { it.yemek_adi }
-                    .map { (yemekAdi, yemekList) ->
-                        yemekList.first()
-                            .copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
-                    }
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // App Bar
-                    TopAppBar(
-                        title = {
-                            Text(
-                                text = "Cart",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 40.sp
-                            )
-                        },
-                        navigationIcon = {
-                            IconButton(
-                                onClick = {
-                                    navController.navigate("home")
-                                },
-                                modifier = Modifier
-                                    .padding(10.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .size(40.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back",
-                                    modifier = Modifier.size(40.dp)
-                                )
-                            }
-                        },
-                        modifier = Modifier.wrapContentHeight(),
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Cart",
+                        fontWeight = FontWeight.Medium,
+                        //fontSize = 40.sp
                     )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Sepet Listesi
-                    Box(
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("home")
+                        },
                         modifier = Modifier
-                            .size(400.dp,700.dp),
-                        contentAlignment = Alignment.TopCenter
-
-
-                    ){
-                        SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel, navController = navController, authViewModel = authViewModel)
-                    }
-
-
-                    // Total Price and LogOut
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Row Bottom Bar with Total Price and Sign Out Button
-                    Row(
-                        modifier = Modifier
-                            .size(400.dp, 60.dp)
-                            .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
-                            .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                            //.padding(10.dp)
+                            //.clip(RoundedCornerShape(8.dp))
+                            //.size(40.dp)
                     ) {
-                        // Total Price
-                        Text(
-                            text = "Total Price: ${aggregatedYemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
-                            modifier = Modifier.weight(1f),
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Medium,
-                            textAlign = TextAlign.Center,
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            //modifier = Modifier.size(40.dp)
                         )
-                        val coroutineScope = rememberCoroutineScope()
+                    }
+                },
+                modifier = Modifier.wrapContentHeight(),
+            )
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = navController)
+        }
+    ) { paddingValues ->
+        when (sepetYemeklerResponse) {
+            is ResourceState.Loading -> {
+                val loading = (sepetYemeklerResponse as ResourceState.Loading)
+                Log.d("SepetScreen", "SepetScreen: Loading... $loading")
+            }
+
+            is ResourceState.Success -> {
+                val response = (sepetYemeklerResponse as ResourceState.Success).data
+                Log.d(
+                    "SepetScreen",
+                    "SepetScreen: SUCCESS... success = ${response.success} | yemekler.size = ${response.sepet_yemekler.size}"
+                )
+                if (response.sepet_yemekler.isNotEmpty()) {
+                    val aggregatedYemekler = response.sepet_yemekler.groupBy { it.yemek_adi }
+                        .map { (yemekAdi, yemekList) ->
+                            yemekList.first()
+                                .copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
+                        }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                            .padding(paddingValues),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Sepet Listesi
+                        Box(
+                            modifier = Modifier
+                                .size(400.dp,700.dp),
+                            contentAlignment = Alignment.TopCenter
+
+
+                        ){
+                            SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel, navController = navController, authViewModel = authViewModel)
+                        }
+
+
+                        // Total Price and LogOut
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Row Bottom Bar with Total Price and Sign Out Button
+                        Row(
+                            modifier = Modifier
+                                .size(400.dp, 60.dp)
+                                .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
+                                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Total Price
+                            Text(
+                                text = "Total Price: ${aggregatedYemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+                                modifier = Modifier.weight(1f),
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center,
+                            )
+                            val coroutineScope = rememberCoroutineScope()
 //                        Box(
 //                            modifier = Modifier.weight(1f)
 //                        ) {
@@ -200,105 +213,79 @@ fun SepetScreen(
 //                                )
 //                            }
 //                        }
-                    } // Row Bottom Bar with Total Price and Sign Out Button
-                }// Column App Bar, Sepet Listesi, Total Price and LogOut
+                        } // Row Bottom Bar with Total Price and Sign Out Button
+                    }// Column App Bar, Sepet Listesi, Total Price and LogOut
 
-            } else {
-                // Sepet boş olduğunda yapılacak işlemler
-                Text(
-                    text = "Sepetiniz boş",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
-                )
-            }
-
-        }
-
-        is ResourceState.Error -> {
-            val error = (sepetYemeklerResponse as ResourceState.Error)
-            Log.d("SepetScreen", "SepetScreen: Error...: $error")
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // App Bar
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = "Cart",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 40.sp
-                        )
-                    },
-                    navigationIcon = {
-                        IconButton(
-                            onClick = {
-                                navController.navigate("home")
-                            },
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .size(40.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back",
-                                modifier = Modifier.size(40.dp)
-                            )
-                        }
-                    },
-                    modifier = Modifier.wrapContentHeight(),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Sepet Listesi
-                Box(
-                    modifier = Modifier
-                        .size(400.dp,700.dp),
-                    contentAlignment = Alignment.Center
-
-
-                ){
-                    Column (
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.SpaceEvenly,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ){
-
-                        // TODO: Sepet Boş olduğunda yapılacak işlemler
-                        // lottie animation
-                        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty_card))
-                        LottieAnimation(
-                            composition = composition,
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            iterations = LottieConstants.IterateForever,
-                            reverseOnRepeat = true
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            text = "Your cart is empty.",
-                            fontSize = 20.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            textAlign = TextAlign.Center,
-                        )
-                    }
+                } else {
+                    // Sepet boş olduğunda yapılacak işlemler
+                    Text(
+                        text = "Sepetiniz boş",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center,
+                    )
                 }
 
+            }
 
-            }// Column App Bar, Sepet Listesi, Total Price and LogOut
+            is ResourceState.Error -> {
+                val error = (sepetYemeklerResponse as ResourceState.Error)
+                Log.d("SepetScreen", "SepetScreen: Error...: $error")
 
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .padding(paddingValues),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Sepet Listesi
+                    Box(
+                        modifier = Modifier
+                            .size(400.dp,700.dp),
+                        contentAlignment = Alignment.Center
+
+
+                    ){
+                        Column (
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.SpaceEvenly,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ){
+
+                            // TODO: Sepet Boş olduğunda yapılacak işlemler
+                            // lottie animation
+                            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.empty_card))
+                            LottieAnimation(
+                                composition = composition,
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                iterations = LottieConstants.IterateForever,
+                                reverseOnRepeat = true
+                            )
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = "Your cart is empty.",
+                                fontSize = 20.sp,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
+
+
+                }// Column App Bar, Sepet Listesi, Total Price and LogOut
+
+            }
         }
     }
 
@@ -312,6 +299,8 @@ fun SepetScreen(
         }
     }
 }
+
+
 
 
 

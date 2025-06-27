@@ -28,13 +28,16 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
+
+
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -56,10 +59,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+
 import coil.compose.AsyncImage
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
@@ -73,6 +78,7 @@ import com.example.foodapp.data.entitiy.Yemekler
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
+import com.example.foodapp.ui.navigation.BottomNavigationBar
 
 /*
 @Composable
@@ -197,127 +203,54 @@ fun HomeScreen(
                         it.yemek_adi.contains(searchText, ignoreCase = true)
                     }
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 1.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
-                ) {
-
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 36.dp)
-                    ){
-                        Text(
-                            text = "Food",
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 40.sp
-                        )
+                Scaffold(
+                    bottomBar = {
+                        BottomNavigationBar(navController = navController)
                     }
+                ) { paddingValues ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                    ) {
 
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    // Arama Kısmı
-                    OutlinedTextField(
-                        value = searchText,
-                        onValueChange = {
-                            searchText = it
-                        },
-                        label = { Text("Search") },
-                        modifier = Modifier.fillMaxWidth(),
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = "Arama"
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 36.dp)
+                        ){
+                            Text(
+                                text = "Food",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 40.sp
                             )
                         }
-                    )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(6.dp))
 
-                    // Yemek Listesi
-                    Box(modifier = Modifier.size(400.dp, 620.dp)) {
+                        // Arama Kısmı
+                        OutlinedTextField(
+                            value = searchText,
+                            onValueChange = {
+                                searchText = it
+                            },
+                            label = { Text("Search") },
+                            modifier = Modifier.fillMaxWidth(),
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Arama"
+                                )
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
                         // Yemek Listesi
-                        YemekListesi(yemekler = filteredYemekler, navController = navController, authViewModel = authViewModel)
-
+                        Box(modifier = Modifier.weight(1f)) { // Use weight to fill remaining space
+                            YemekListesi(yemekler = filteredYemekler, navController = navController, authViewModel = authViewModel)
+                        }
                     }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-
-                    // BottomAppBar
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            //.background(Color.LightGray)
-                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp)),
-                        contentAlignment = Alignment.Center
-
-
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            // Sepete Git
-                            IconButton(
-                                onClick = {
-                                    navController.navigate("home")
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxSize()
-
-                            ) {
-
-                                Icon(
-                                    imageVector = Icons.Filled.Home,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(100.dp),
-
-
-                                )
-                            }
-                            // Sepete Git
-                            IconButton(
-                                onClick = {
-                                    navController.navigate("sepet")
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .fillMaxSize()
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.List,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(100.dp),
-
-
-                                )
-                            }
-
-                            // Sepete Git
-                            IconButton(
-                                onClick = {
-                                    navController.navigate("account")
-                                },
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .weight(1f)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.AccountCircle,
-                                    contentDescription = "",
-                                    modifier = Modifier.size(100.dp),
-
-
-                                )
-                            }
-                        }// BottomAppBar Row
-                    }
-
-                }// Column
+                }
 
             } else {
                 // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
