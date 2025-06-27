@@ -177,8 +177,7 @@ fun SepetScreen(
                         Row(
                             modifier = Modifier
                                 .size(400.dp, 60.dp)
-                                .padding(start = 10.dp, end = 10.dp, bottom = 8.dp)
-                                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp)),
+                                .padding(start = 10.dp, end = 10.dp, bottom = 8.dp),
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -329,9 +328,6 @@ fun SepetListesi(
                 .fillMaxWidth()
                 //.height(1500.dp) ////
                 .padding(start = 16.dp, end = 16.dp,)
-                //.background(Brush.verticalGradient(listOf(Color.White, Color.LightGray)))
-                //.background(Color.LightGray)
-                .border(2.dp, Color.Gray, RoundedCornerShape(8.dp))
 
         ) {
 
@@ -404,7 +400,6 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
     Card(
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(2.dp, Color.Gray),
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
             .height(130.dp),

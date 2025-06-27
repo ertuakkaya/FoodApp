@@ -80,77 +80,7 @@ import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.YemeklerViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 
-/*
-@Composable
-fun HomeScreen(yemeklerViewModel: YemeklerViewModel = hiltViewModel() , navController: NavController) {
 
-    val yemeklerResponse by yemeklerViewModel.yemekler.collectAsState()
-
-
-    when(yemeklerResponse){
-        is ResourceState.Loading -> {
-            Log.d("HOMESCREEN", "HomeScreen: Loading...")
-        }
-        is ResourceState.Success -> {
-            val response = (yemeklerResponse as ResourceState.Success).data
-            Log.d("HOMESCREEN", "HomeScreen: SUCCESS... success = ${response.success} | yemekeler.size = ${response.yemekler.size}")
-
-            if(response.yemekler.isNotEmpty()){
-
-                //
-                Column (
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
-                        .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
-                ){
-                    Text(text = "arama kısmı gelecek")
-
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    YemekListesi(yemekler = response.yemekler,navController = navController)
-                }
-
-
-            }else{
-                // TODO("EmptyStateComponent() buraya yemeklerin yuklenmedigi senaryo eklenecek")
-            }
-        }
-        is ResourceState.Error -> {
-            val error = (yemeklerResponse as ResourceState.Error)
-            Log.d("HOMESCREEN", "HomeScreen: Error... $error")
-        }
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // Sepete Git
-        IconButton(
-            onClick = {
-                navController.navigate("sepet")
-            },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(66.dp)
-                .background(Color.White, shape = RoundedCornerShape(28.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.basket),
-                contentDescription = "Sepet",
-                modifier = Modifier.size(30.dp),
-                tint = Color.Black
-            )
-        }
-    }
-
-
-}
-
-
- */
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -204,6 +134,19 @@ fun HomeScreen(
                     }
                 }
                 Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = "Food",
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 40.sp,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        )
+                    },
                     bottomBar = {
                         BottomNavigationBar(navController = navController)
                     }
@@ -213,17 +156,6 @@ fun HomeScreen(
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 36.dp)
-                        ){
-                            Text(
-                                text = "Food",
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 40.sp
-                            )
-                        }
 
                         Spacer(modifier = Modifier.height(6.dp))
 
@@ -384,9 +316,7 @@ fun YemekListesi(yemekler: List<Yemekler>, navController: NavController,authView
         columns = GridCells.Fixed(2),
         modifier = Modifier
             .fillMaxSize()
-            //.padding(8.dp)
-            //.background(Color.LightGray)
-            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+            
 
     ) {
         items(yemekler.size) { yemek ->
