@@ -18,6 +18,10 @@ class AuthViewModel : ViewModel() {
         checkAuthStatus()
     }
 
+    fun isUserLoggedIn(): Boolean {
+        return auth.currentUser != null
+    }
+
     // Kullanıcının oturum durumunu kontrol eden fonksiyon
     fun checkAuthStatus(){
 

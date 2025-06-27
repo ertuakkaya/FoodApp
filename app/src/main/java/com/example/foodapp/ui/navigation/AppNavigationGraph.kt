@@ -5,9 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,69 +36,44 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
 
     val coroutineScope = rememberCoroutineScope()
 
-    val isLoading = remember { mutableStateOf(true) }
+    
 
-    NavHost(navController = navController, startDestination = "login") {
+    NavHost(navController = navController, startDestination = "splash") {
 
-
-        composable("login") {
-
-
-            // Set isLoading to true every time we navigate to this screen
-            LaunchedEffect(key1 = "login") {
-                isLoading.value = true
-            }
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (isLoading.value) {
-                    // lottie animation
-                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie))
-                    LottieAnimation(
-                        composition = composition,
-                        modifier = Modifier.fillMaxSize(),
-                        iterations = LottieConstants.IterateForever,
-                        reverseOnRepeat = true
-                    )
-                } else {
-                    LoginPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
-                    //viewModel.sepettekiYemekleriGetir()
+        composable("splash") {
+            val coroutineScope = rememberCoroutineScope()
+            LaunchedEffect(key1 = Unit) {
+                coroutineScope.launch {
+                    delay(1000) // Simulate a loading process
+                    if (authViewModel.isUserLoggedIn()) {
+                        navController.navigate("home") {
+                            popUpTo("splash") { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate("login") {
+                            popUpTo("splash") { inclusive = true }
+                        }
+                    }
                 }
             }
-
-            LaunchedEffect(key1 = "login") {
-                delay(1000) // Adjust this delay to match your loading time
-                isLoading.value = false
+            // You can show a loading animation here
+            Box(modifier = Modifier.fillMaxSize()) {
+                val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie)).value
+                LottieAnimation(
+                    composition = composition,
+                    modifier = Modifier.fillMaxSize(),
+                    iterations = LottieConstants.IterateForever,
+                    reverseOnRepeat = true
+                )
             }
+        }
 
+        composable("login") {
+            LoginPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
         }
 
         composable("signup") {
-
-            // Set isLoading to true every time we navigate to this screen
-            LaunchedEffect(key1 = "signup") {
-                isLoading.value = true
-            }
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (isLoading.value) {
-                    // lottie animation
-                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie))
-                    LottieAnimation(
-                        composition = composition,
-                        modifier = Modifier.fillMaxSize(),
-                        iterations = LottieConstants.IterateForever,
-                        reverseOnRepeat = true
-                    )
-                } else {
-                    SignUpPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
-                }
-            }
-
-            LaunchedEffect(key1 = "signup") {
-                delay(1000) // Adjust this delay to match your loading time
-                isLoading.value = false
-            }
-
+            SignUpPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
         }
 
         composable("home") {
@@ -109,35 +81,8 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
         }
 
         composable("sepet") {
-
-            // Set isLoading to true every time we navigate to this screen
-            LaunchedEffect(key1 = "sepet") {
-                isLoading.value = true
-            }
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (isLoading.value) {
-                    // lottie animation
-                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie))
-                    LottieAnimation(
-                        composition = composition,
-                        modifier = Modifier.fillMaxSize(),
-                        iterations = LottieConstants.IterateForever,
-                        reverseOnRepeat = true
-                    )
-                } else {
-                    SepetScreen(viewModel, navController = navController, authViewModel = authViewModel)
-                    viewModel.sepettekiYemekleriGetir()
-                }
-            }
-
-            LaunchedEffect(key1 = "sepet") {
-                delay(2000) // Adjust this delay to match your loading time
-                isLoading.value = false
-            }
-
-
-
+            SepetScreen(viewModel, navController = navController, authViewModel = authViewModel)
+            viewModel.sepettekiYemekleriGetir()
         }
 
         composable(
@@ -169,31 +114,7 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
 
 
         composable("account") {
-
-            // Set isLoading to true every time we navigate to this screen
-            LaunchedEffect(key1 = "account") {
-                isLoading.value = true
-            }
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (isLoading.value) {
-                    // lottie animation
-                    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.auth_lottie))
-                    LottieAnimation(
-                        composition = composition,
-                        modifier = Modifier.fillMaxSize(),
-                        iterations = LottieConstants.IterateForever,
-                        reverseOnRepeat = true
-                    )
-                } else {
-                    AccountScreen(authViewModel = authViewModel, navController = navController)
-                }
-            }
-
-            LaunchedEffect(key1 = "account") {
-                delay(1000) // Adjust this delay to match your loading time
-                isLoading.value = false
-            }
+            AccountScreen(authViewModel = authViewModel, navController = navController)
         }
 
     }
