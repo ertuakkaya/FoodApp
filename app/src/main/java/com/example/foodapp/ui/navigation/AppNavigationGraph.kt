@@ -2,7 +2,6 @@ package com.example.foodapp.ui.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
@@ -18,25 +17,21 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.foodapp.R
-import com.example.foodapp.data.entitiy.SepetYemekler
+import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.ui.screens.AccountScreen
-import com.example.foodapp.ui.screens.DetayScreen
+import com.example.foodapp.ui.screens.DetailScreen
 import com.example.foodapp.ui.screens.HomeScreen
-import com.example.foodapp.ui.screens.SepetScreen
+import com.example.foodapp.ui.screens.CartScreen
 import com.example.foodapp.ui.screens.login.LoginPage
 import com.example.foodapp.ui.screens.signup.SignUpPage
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.YemeklerViewModel
+import com.example.foodapp.ui.viewmodel.FoodsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewModel,viewModel: YemeklerViewModel = hiltViewModel()) {
+fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewModel,viewModel: FoodsViewModel = hiltViewModel()) {
     val navController = rememberNavController()
-
-    val coroutineScope = rememberCoroutineScope()
-
-    
 
     NavHost(navController = navController, startDestination = "splash") {
 
@@ -56,7 +51,6 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
                     }
                 }
             }
-            // You can show a loading animation here
             Box(modifier = Modifier.fillMaxSize()) {
                 val composition = rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.loading_lottie)).value
                 LottieAnimation(
@@ -77,41 +71,38 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
         }
 
         composable("home") {
-            HomeScreen(yemeklerViewModel = viewModel, navController = navController, authViewModel = authViewModel)
+            HomeScreen(foodsViewModel = viewModel, navController = navController, authViewModel = authViewModel)
         }
 
-        composable("sepet") {
-            SepetScreen(viewModel, navController = navController, authViewModel = authViewModel)
-            viewModel.sepettekiYemekleriGetir()
+        composable("cart") {
+            CartScreen(viewModel, navController = navController, authViewModel = authViewModel)
+            viewModel.getCartFoods()
         }
 
         composable(
-            route = "detay/{yemekAdi}/{yemekFiyat}/{yemekResimAdi}/{yemekId}",
+            route = "detail/{foodName}/{foodPrice}/{foodImageName}/{foodId}",
             arguments = listOf(
-                navArgument("yemekAdi") { type = NavType.StringType },
-                navArgument("yemekFiyat") { type = NavType.IntType },
-                navArgument("yemekResimAdi") { type = NavType.StringType },
-                navArgument("yemekId") { type = NavType.IntType }
+                navArgument("foodName") { type = NavType.StringType },
+                navArgument("foodPrice") { type = NavType.IntType },
+                navArgument("foodImageName") { type = NavType.StringType },
+                navArgument("foodId") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            val yemekAdi = backStackEntry.arguments?.getString("yemekAdi") ?: ""
-            val yemekFiyat = backStackEntry.arguments?.getInt("yemekFiyat") ?: 0
-            val yemekResimAdi = backStackEntry.arguments?.getString("yemekResimAdi") ?: ""
-            val yemekId = backStackEntry.arguments?.getInt("yemekId") ?: 0
-            DetayScreen(
-                yemek = SepetYemekler(
-                    sepet_yemek_id = yemekId,
-                    yemek_adi = yemekAdi,
-                    yemek_fiyat = yemekFiyat,
-                    yemek_resim_adi = yemekResimAdi,
-                    yemek_siparis_adet = 1
+            val foodName = backStackEntry.arguments?.getString("foodName") ?: ""
+            val foodPrice = backStackEntry.arguments?.getInt("foodPrice") ?: 0
+            val foodImageName = backStackEntry.arguments?.getString("foodImageName") ?: ""
+            val foodId = backStackEntry.arguments?.getInt("foodId") ?: 0
+            DetailScreen(
+                food = CartFood(
+                    cart_food_id = foodId,
+                    food_name = foodName,
+                    food_price = foodPrice,
+                    food_image_name = foodImageName,
+                    food_order_quantity = 1
                 ), navController = navController, authViewModel = authViewModel
 
             )
         }
-
-
-
 
         composable("account") {
             AccountScreen(authViewModel = authViewModel, navController = navController)

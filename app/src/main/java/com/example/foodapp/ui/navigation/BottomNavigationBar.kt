@@ -23,7 +23,7 @@ data class BottomNavItem(val route: String, val icon: ImageVector, val label: St
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
         BottomNavItem("home", Icons.Filled.Home, "Home"),
-        BottomNavItem("sepet", Icons.Filled.ShoppingCart, "Cart"),
+        BottomNavItem("cart", Icons.Filled.ShoppingCart, "Cart"),
         BottomNavItem("account", Icons.Filled.AccountCircle, "Account")
     )
 

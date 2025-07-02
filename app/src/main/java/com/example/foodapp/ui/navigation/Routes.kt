@@ -1,8 +1,11 @@
 package com.example.foodapp.ui.navigation
 
-// Best practice olarak Routes adında bir object oluşturulur ve uygulamadaki tüm rotalar burada tutulur.
 object Routes {
 
-    const val HOME_SCREEN = "HOME"
-    const val LOGIN_SCREEN = "LOGIN"
+    const val HOME = "home"
+    const val LOGIN = "login"
+    const val SIGNUP = "signup"
+    const val CART = "cart"
+    const val DETAIL = "detail"
+    const val ACCOUNT = "account"
 }

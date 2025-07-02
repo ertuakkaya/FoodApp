@@ -1,9 +1,9 @@
 package com.example.foodapp.di
 
-import com.example.foodapp.data.datasource.YemeklerDataSource
-import com.example.foodapp.data.repository.YemeklerRepository
+import com.example.foodapp.data.datasource.FoodsDataSource
+import com.example.foodapp.data.repository.FoodsRepository
 import com.example.foodapp.retrofit.ApiUtils
-import com.example.foodapp.retrofit.YemeklerDao
+import com.example.foodapp.retrofit.FoodsDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,20 +16,20 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideYemeklerDao() : YemeklerDao{
-        return ApiUtils.getYemeklerDao()
+    fun provideFoodsDao() : FoodsDao{
+        return ApiUtils.getFoodsDao()
     }
 
     @Provides
     @Singleton
-    fun provideYemeklerDataSource(yemeklerDao: YemeklerDao) : YemeklerDataSource{
-        return YemeklerDataSource(yemeklerDao)
+    fun provideFoodsDataSource(foodsDao: FoodsDao) : FoodsDataSource{
+        return FoodsDataSource(foodsDao)
     }
 
     @Provides
     @Singleton
-    fun provideYemeklerRepository(yemeklerDataSource: YemeklerDataSource) : YemeklerRepository {
-        return YemeklerRepository(yemeklerDataSource)
+    fun provideFoodsRepository(foodsDataSource: FoodsDataSource) : FoodsRepository {
+        return FoodsRepository(foodsDataSource)
     }
 
 }

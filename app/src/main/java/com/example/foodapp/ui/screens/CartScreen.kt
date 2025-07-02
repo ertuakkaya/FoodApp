@@ -7,6 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+
+
 import androidx.compose.foundation.layout.Column
 
 
@@ -74,11 +76,10 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
-import com.example.foodapp.data.entitiy.SepetYemekler
-import com.example.foodapp.data.entitiy.Yemekler
+import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.YemeklerViewModel
+import com.example.foodapp.ui.viewmodel.FoodsViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -87,12 +88,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SepetScreen(
-    yemeklerViewModel: YemeklerViewModel = hiltViewModel(),
+fun CartScreen(
+    foodsViewModel: FoodsViewModel = hiltViewModel(),
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val sepetYemeklerResponse by yemeklerViewModel.sepetYemekler.collectAsState()
+    val cartFoodsResponse by foodsViewModel.cartFoods.collectAsState()
 
     Scaffold(
         topBar = {
@@ -128,23 +129,23 @@ fun SepetScreen(
             BottomNavigationBar(navController = navController)
         }
     ) { paddingValues ->
-        when (sepetYemeklerResponse) {
+        when (cartFoodsResponse) {
             is ResourceState.Loading -> {
-                val loading = (sepetYemeklerResponse as ResourceState.Loading)
-                Log.d("SepetScreen", "SepetScreen: Loading... $loading")
+                val loading = (cartFoodsResponse as ResourceState.Loading)
+                Log.d("CartScreen", "CartScreen: Loading... $loading")
             }
 
             is ResourceState.Success -> {
-                val response = (sepetYemeklerResponse as ResourceState.Success).data
+                val response = (cartFoodsResponse as ResourceState.Success).data
                 Log.d(
-                    "SepetScreen",
-                    "SepetScreen: SUCCESS... success = ${response.success} | yemekler.size = ${response.sepet_yemekler.size}"
+                    "CartScreen",
+                    "CartScreen: SUCCESS... success = ${response.success} | foods.size = ${response.cart_foods.size}"
                 )
-                if (response.sepet_yemekler.isNotEmpty()) {
-                    val aggregatedYemekler = response.sepet_yemekler.groupBy { it.yemek_adi }
-                        .map { (yemekAdi, yemekList) ->
-                            yemekList.first()
-                                .copy(yemek_siparis_adet = yemekList.sumOf { it.yemek_siparis_adet })
+                if (response.cart_foods.isNotEmpty()) {
+                    val aggregatedFoods = response.cart_foods.groupBy { it.food_name }
+                        .map { (foodName, foodList) ->
+                            foodList.first()
+                                .copy(food_order_quantity = foodList.sumOf { it.food_order_quantity })
                         }
 
                     Column(
@@ -166,7 +167,7 @@ fun SepetScreen(
 
 
                         ){
-                            SepetListesi(yemekler = aggregatedYemekler, yemeklerViewModel = yemeklerViewModel, navController = navController, authViewModel = authViewModel)
+                            CartList(foods = aggregatedFoods, foodsViewModel = foodsViewModel, navController = navController, authViewModel = authViewModel)
                         }
 
 
@@ -183,7 +184,7 @@ fun SepetScreen(
                         ) {
                             // Total Price
                             Text(
-                                text = "Total Price: ${aggregatedYemekler.sumOf { it.yemek_fiyat * it.yemek_siparis_adet }} ₺",
+                                text = "Total Price: ${aggregatedFoods.sumOf { it.food_price * it.food_order_quantity }} ₺",
                                 modifier = Modifier.weight(1f),
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Medium,
@@ -228,8 +229,8 @@ fun SepetScreen(
             }
 
             is ResourceState.Error -> {
-                val error = (sepetYemeklerResponse as ResourceState.Error)
-                Log.d("SepetScreen", "SepetScreen: Error...: $error")
+                val error = (cartFoodsResponse as ResourceState.Error)
+                Log.d("CartScreen", "CartScreen: Error...: $error")
 
                 Column(
                     modifier = Modifier
@@ -305,9 +306,9 @@ fun SepetScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SepetListesi(
-    yemekler: List<SepetYemekler>,
-    yemeklerViewModel: YemeklerViewModel,
+fun CartList(
+    foods: List<CartFood>,
+    foodsViewModel: FoodsViewModel,
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
@@ -331,9 +332,9 @@ fun SepetListesi(
 
         ) {
 
-            items(yemekler.size) { yemek ->
+            items(foods.size) { food ->
                 val kullaniciAdi = authViewModel.getUserName()
-                SepetKart(yemek = yemekler[yemek], yemeklerViewModel = yemeklerViewModel, authViewModel = AuthViewModel())
+                CartCard(food = foods[food], foodsViewModel = foodsViewModel, authViewModel = authViewModel)
             }
         }
 
@@ -348,51 +349,51 @@ fun SepetListesi(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
+fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
 
     // coroutine scope
     val coroutineScope = rememberCoroutineScope()
 
 
-    val response by yemeklerViewModel.sepetYemekler.collectAsState()
+    val response by foodsViewModel.cartFoods.collectAsState()
 
     when (response) {
         is ResourceState.Loading -> {
-            Log.d("Sepete Ekleme", "Sepete Ekleme: Loading...")
+            Log.d("AddToCart", "AddToCart: Loading...")
         }
 
         is ResourceState.Success -> {
             val response = (response as ResourceState.Success).data
             Log.d(
-                "Sepete Ekleme",
-                "Sepete Ekleme: SUCCESS... success = ${response.success} | message = ${response.sepet_yemekler.size}"
+                "AddToCart",
+                "AddToCart: SUCCESS... success = ${response.success} | message = ${response.cart_foods.size}"
             )
         }
 
         is ResourceState.Error -> {
             val error = (response as ResourceState.Error)
-            Log.d("Sepete Ekleme", "Sepete Ekleme: Error... $error")
+            Log.d("AddToCart", "AddToCart: Error... $error")
         }
     }
 
-    val sepetYemekSilResponse by yemeklerViewModel.sepettenYemekSil.collectAsState()
+    val deleteFoodFromCartResponse by foodsViewModel.deleteFoodFromCart.collectAsState()
 
-    when (sepetYemekSilResponse) {
+    when (deleteFoodFromCartResponse) {
         is ResourceState.Loading -> {
-            Log.d("SepetSilme", "SepetSilme: Loading...")
+            Log.d("DeleteFromCart", "DeleteFromCart: Loading...")
         }
 
         is ResourceState.Success -> {
-            val response = (sepetYemekSilResponse as ResourceState.Success).data
+            val response = (deleteFoodFromCartResponse as ResourceState.Success).data
             Log.d(
-                "SepetSilme",
-                "SepetSilme: SUCCESS... success = ${response.success} | message = ${response.message}"
+                "DeleteFromCart",
+                "DeleteFromCart: SUCCESS... success = ${response.success} | message = ${response.message}"
             )
         }
 
         is ResourceState.Error -> {
-            val error = (sepetYemekSilResponse as ResourceState.Error)
-            Log.d("SepetSilme", "SepetSilme: Error... $error")
+            val error = (deleteFoodFromCartResponse as ResourceState.Error)
+            Log.d("DeleteFromCart", "DeleteFromCart: Error... $error")
         }
     }
 
@@ -418,8 +419,8 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
         ) {
             // Yemek Resmi
             AsyncImage(
-                model = "http://kasimadalan.pe.hu/yemekler/resimler/${yemek.yemek_resim_adi}",
-                contentDescription = yemek.yemek_adi,
+                model = "http://kasimadalan.pe.hu/yemekler/resimler/${food.food_image_name}",
+                contentDescription = food.food_name,
                 modifier = Modifier
                     .fillMaxHeight()
                     .clickable {
@@ -448,7 +449,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 ) {
                 // Yemek Adı
                 Text(
-                    text = yemek.yemek_adi,
+                    text = food.food_name,
                     modifier = Modifier
                         .fillMaxWidth(),
                     //.size(width = 150.dp, height = 30.dp),
@@ -460,7 +461,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                     )
                 // Yemek Fiyatı
                 Text(
-                    text = "${yemek.yemek_fiyat} ₺",
+                    text = "${food.food_price} ₺",
                     color = Color.Red,
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -472,7 +473,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 )
                 // Yemek Adedi
                 Text(
-                    text = "Quantity: ${yemek.yemek_siparis_adet}",
+                    text = "Quantity: ${food.food_order_quantity}",
                     modifier = Modifier
                         .fillMaxWidth(),
 
@@ -492,7 +493,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
-                            yemeklerViewModel.sepettenYemekSil(sepet_yemek_id = yemek.sepet_yemek_id, kullanici_adi = authViewModel.getUserName() )
+                            foodsViewModel.deleteFoodFromCart(cart_food_id = food.cart_food_id, user_name = authViewModel.getUserName() )
                         }
 
                     },
@@ -513,7 +514,7 @@ fun SepetKart(yemek: SepetYemekler, yemeklerViewModel: YemeklerViewModel = hiltV
 
                 // Toplam Fiayt
                 Text(
-                    text = "${yemek.yemek_fiyat * yemek.yemek_siparis_adet} ₺",
+                    text = "${food.food_price * food.food_order_quantity} ₺",
                     modifier = Modifier
                         .fillMaxWidth(),
 
@@ -537,6 +538,3 @@ fun PreviewSepetKart() {
     SepetKart( SepetYemekler(1, "Yemek Adı", "yemek_resim_adi", 10, 1))
 }
 */
-
-
-
