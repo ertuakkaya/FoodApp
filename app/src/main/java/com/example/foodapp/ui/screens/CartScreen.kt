@@ -42,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 
 
 
@@ -102,6 +103,7 @@ fun CartScreen(
                     Text(
                         text = "Cart",
                         fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
                         //fontSize = 40.sp
                     )
                 },
@@ -118,11 +120,15 @@ fun CartScreen(
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
+                            tint = MaterialTheme.colorScheme.onSurface
                             //modifier = Modifier.size(40.dp)
                         )
                     }
                 },
                 modifier = Modifier.wrapContentHeight(),
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
             )
         },
         bottomBar = {
@@ -151,7 +157,7 @@ fun CartScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(Color.White)
+                            .background(MaterialTheme.colorScheme.surface)
                             .padding(paddingValues),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -162,7 +168,8 @@ fun CartScreen(
                         // Sepet Listesi
                         Box(
                             modifier = Modifier
-                                .size(400.dp,700.dp),
+                                .fillMaxSize(),
+                                //.size(400.dp,700.dp),
                             contentAlignment = Alignment.TopCenter
 
 
@@ -189,6 +196,7 @@ fun CartScreen(
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Medium,
                                 textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                             val coroutineScope = rememberCoroutineScope()
 //                        Box(
@@ -223,6 +231,7 @@ fun CartScreen(
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
@@ -235,7 +244,7 @@ fun CartScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
+                        .background(MaterialTheme.colorScheme.surface)
                         .padding(paddingValues),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -278,6 +287,7 @@ fun CartScreen(
                                     .fillMaxWidth()
                                     .padding(16.dp),
                                 textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -328,7 +338,7 @@ fun CartList(
                 //.fillMaxSize()
                 .fillMaxWidth()
                 //.height(1500.dp) ////
-                .padding(start = 16.dp, end = 16.dp,)
+                //.padding(start = 16.dp, end = 16.dp,)
 
         ) {
 
@@ -405,7 +415,7 @@ fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),au
             .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp)
             .height(130.dp),
         //.wrapContentSize(),
-
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
         elevation = CardDefaults.cardElevation(4.dp),
         onClick = {} // TODO: KART ICINDEN DETAYA GIDILEBILIR
     ) {
@@ -422,107 +432,77 @@ fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),au
                 model = "http://kasimadalan.pe.hu/yemekler/resimler/${food.food_image_name}",
                 contentDescription = food.food_name,
                 modifier = Modifier
-                    .fillMaxHeight()
+                    .size(80.dp) // Fixed size for the image
+                    .clip(RoundedCornerShape(8.dp)) // Add rounded corners to the image
                     .clickable {
                         // TODO: YemekDetayScreen'e git
                         //TODO: (yemekDetayScreen(yemek.yemek_adi, yemek.yemek_fiyat, yemek.yemek_resim_adi, yemek.yemek_id))
-
                     },
-                //.fillMaxWidth(),
-                contentScale = ContentScale.Fit,
-                alignment = Alignment.CenterStart
-
-
+                contentScale = ContentScale.Crop, // Crop to fill the bounds
+                alignment = Alignment.Center
             )
 
 
             // Yemek Fiyatı ve Sepete Ekle Butonu
             Column(
                 modifier = Modifier
-                    //.fillMaxSize(),
-                    //.fillMaxWidth(),
-                    .size(width = 150.dp, height = 100.dp),
-
-
-                verticalArrangement = Arrangement.SpaceBetween,
-
-                ) {
-                // Yemek Adı
+                    .weight(1f) // Take available space
+                    .fillMaxHeight()
+                    .padding(start = 8.dp), // Add some padding to the left of the text
+                verticalArrangement = Arrangement.Center, // Center content vertically
+                horizontalAlignment = Alignment.Start // Align text to start
+            ) {
                 Text(
                     text = food.food_name,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    //.size(width = 150.dp, height = 30.dp),
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp, // Slightly smaller font size
                     fontWeight = FontWeight.SemiBold,
-
-
-                    )
-                // Yemek Fiyatı
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1, // Limit to one line
+                    overflow = TextOverflow.Ellipsis // Add ellipsis if text overflows
+                )
+                Spacer(modifier = Modifier.height(4.dp)) // Small space between name and price
                 Text(
                     text = "${food.food_price} ₺",
-                    color = Color.Red,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    //.weight(1f),
-                    //.align(Alignment.CenterVertically)
-                    //.padding(start = 8.dp),
-                    fontSize = 20.sp,
-                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.error,
+                    fontSize = 16.sp, // Slightly smaller font size
+                    fontWeight = FontWeight.Medium
                 )
-                // Yemek Adedi
+                Spacer(modifier = Modifier.height(4.dp)) // Small space between price and quantity
                 Text(
                     text = "Quantity: ${food.food_order_quantity}",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-
-                    //.padding(top = 4.dp),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
+                    fontSize = 14.sp, // Smaller font size for quantity
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-
             }
             Column(
                 modifier = Modifier
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
+                    .fillMaxHeight()
+                    .padding(end = 8.dp), // Add padding to the right
+                verticalArrangement = Arrangement.SpaceAround, // Distribute space evenly
+                horizontalAlignment = Alignment.End // Align content to the end
             ) {
-                // Sepet Sil Butonu
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
                             foodsViewModel.deleteFoodFromCart(cart_food_id = food.cart_food_id, user_name = authViewModel.getUserName() )
                         }
-
                     },
                     modifier = Modifier
-                        .size(30.dp)
-                        //.padding(end = 8.dp)
-                        .align(Alignment.CenterHorizontally),
-
-                    ) {
+                        .size(36.dp) // Slightly larger icon button
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.garbage_bin),
-                        contentDescription = "",
-                        modifier = Modifier.fillMaxSize()
-
-
+                        contentDescription = "Delete from cart",
+                        modifier = Modifier.fillMaxSize(),
+                        tint = MaterialTheme.colorScheme.error // Use error color for delete icon
                     )
                 }
-
-                // Toplam Fiayt
                 Text(
                     text = "${food.food_price * food.food_order_quantity} ₺",
-                    modifier = Modifier
-                        .fillMaxWidth(),
-
-
-                    //.padding(top = 4.dp),
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp, // Larger font size for total price
+                    fontWeight = FontWeight.Bold, // Bold for total price
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
