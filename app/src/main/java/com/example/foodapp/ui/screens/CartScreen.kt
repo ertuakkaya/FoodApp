@@ -95,7 +95,7 @@ import kotlinx.coroutines.launch
 fun CartScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val cartFoodsResponse by homeViewModel.cartFoods.collectAsState()
 
@@ -181,7 +181,7 @@ fun CartScreen(
 
 
                         ){
-                            CartList(foods = aggregatedFoods, homeViewModel = homeViewModel, navController = navController, authViewModel = authViewModel)
+                                                        CartList(foods = aggregatedFoods, homeViewModel = homeViewModel, navController = navController, authViewModel = authViewModel)
                         }
 
 

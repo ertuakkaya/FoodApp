@@ -67,10 +67,10 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController,
-    authViewModel: AuthViewModel
+    navController: NavController
 ) {
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     Log.d("HOMESCREEN", "HomeScreen composable entered")
 
     val authState = authViewModel.authState.observeAsState()
@@ -281,7 +281,7 @@ fun FoodCard(
 }
 
 @Composable
-fun FoodList(foods: List<Food>, navController: NavController,authViewModel: AuthViewModel) {
+fun FoodList(foods: List<Food>, navController: NavController, authViewModel: AuthViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),

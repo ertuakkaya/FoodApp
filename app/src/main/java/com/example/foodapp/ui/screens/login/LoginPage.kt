@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -37,12 +38,14 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.foodapp.R
 import com.example.foodapp.ui.viewmodel.AuthState
 
+
+
 @Composable
 fun LoginPage(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    authViewModel: AuthViewModel
+    navController: NavHostController
 ) {
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")

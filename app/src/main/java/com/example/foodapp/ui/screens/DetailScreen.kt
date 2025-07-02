@@ -50,7 +50,9 @@ import com.example.foodapp.ui.viewmodel.DetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(food: CartFood, detailViewModel: DetailViewModel = hiltViewModel(), navController: NavController, authViewModel: AuthViewModel) {
+fun DetailScreen(food: CartFood, navController: NavController) {
+    val detailViewModel: DetailViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     val foodId = food.cart_food_id
     val foodName = food.food_name
     val foodImageName = food.food_image_name

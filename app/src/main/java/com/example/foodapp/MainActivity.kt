@@ -18,9 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity ( ) : ComponentActivity() {
 
-    private val homeViewModel: HomeViewModel by viewModels()
-
-    val authViewModel: AuthViewModel by viewModels()
+    // ViewModels will be obtained directly in composables using hiltViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +30,7 @@ class MainActivity ( ) : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
 
-                    AppNavigationGraph(authViewModel = authViewModel,homeViewModel = homeViewModel)
+                    AppNavigationGraph()
 
                 }
 

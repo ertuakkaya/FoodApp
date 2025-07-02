@@ -30,7 +30,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewModel,homeViewModel: HomeViewModel = hiltViewModel()) {
+fun AppNavigationGraph (modifier: Modifier = Modifier) {
+    val authViewModel: AuthViewModel = hiltViewModel()
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "splash") {
@@ -63,20 +64,19 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
         }
 
         composable("login") {
-            LoginPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
+            LoginPage(modifier = modifier, navController = navController)
         }
 
         composable("signup") {
-            SignUpPage(modifier = modifier, navController = navController, authViewModel = authViewModel)
+            SignUpPage(modifier = modifier, navController = navController)
         }
 
         composable("home") {
-            HomeScreen(homeViewModel = homeViewModel, navController = navController, authViewModel = authViewModel)
+            HomeScreen(navController = navController)
         }
 
         composable("cart") {
-            CartScreen(homeViewModel, navController = navController, authViewModel = authViewModel)
-            //homeViewModel.getCartFoods()
+            CartScreen(navController = navController)
         }
 
         composable(
@@ -99,13 +99,13 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
                     food_price = foodPrice,
                     food_image_name = foodImageName,
                     food_order_quantity = 1
-                ), navController = navController, authViewModel = authViewModel
+                ), navController = navController
 
             )
         }
 
         composable("account") {
-            AccountScreen(authViewModel = authViewModel, navController = navController)
+            AccountScreen(navController = navController)
         }
 
     }

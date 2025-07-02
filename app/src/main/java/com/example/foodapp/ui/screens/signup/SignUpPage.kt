@@ -22,12 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 
+
+
 @Composable
-fun SignUpPage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+fun SignUpPage(modifier: Modifier = Modifier,navController: NavController) {
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")
