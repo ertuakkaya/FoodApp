@@ -25,12 +25,12 @@ import com.example.foodapp.ui.screens.CartScreen
 import com.example.foodapp.ui.screens.login.LoginPage
 import com.example.foodapp.ui.screens.signup.SignUpPage
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.FoodsViewModel
+import com.example.foodapp.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewModel,viewModel: FoodsViewModel = hiltViewModel()) {
+fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewModel,homeViewModel: HomeViewModel = hiltViewModel()) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "splash") {
@@ -71,12 +71,12 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
         }
 
         composable("home") {
-            HomeScreen(foodsViewModel = viewModel, navController = navController, authViewModel = authViewModel)
+            HomeScreen(homeViewModel = homeViewModel, navController = navController, authViewModel = authViewModel)
         }
 
         composable("cart") {
-            CartScreen(viewModel, navController = navController, authViewModel = authViewModel)
-            //viewModel.getCartFoods()
+            CartScreen(homeViewModel, navController = navController, authViewModel = authViewModel)
+            //homeViewModel.getCartFoods()
         }
 
         composable(

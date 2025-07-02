@@ -12,13 +12,13 @@ import androidx.compose.ui.Modifier
 import com.example.foodapp.ui.navigation.AppNavigationGraph
 import com.example.foodapp.ui.theme.FoodAppTheme
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.FoodsViewModel
+import com.example.foodapp.ui.viewmodel.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity ( ) : ComponentActivity() {
 
-    private val viewModel: FoodsViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
     val authViewModel: AuthViewModel by viewModels()
 
@@ -32,7 +32,7 @@ class MainActivity ( ) : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                 ) {
 
-                    AppNavigationGraph(authViewModel = authViewModel,viewModel = viewModel)
+                    AppNavigationGraph(authViewModel = authViewModel,homeViewModel = homeViewModel)
 
                 }
 

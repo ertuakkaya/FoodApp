@@ -79,9 +79,11 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entity.CartFood
+import com.example.foodapp.data.entity.CartFoodsResponse
+import com.example.foodapp.data.entity.CRUDResponse
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.FoodsViewModel
+import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -91,14 +93,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    foodsViewModel: FoodsViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val cartFoodsResponse by foodsViewModel.cartFoods.collectAsState()
+    val cartFoodsResponse by homeViewModel.cartFoods.collectAsState()
 
     LaunchedEffect(Unit) {
-        foodsViewModel.getCartFoods()
+        homeViewModel.getCartFoods()
     }
 
     Scaffold(
@@ -142,12 +144,12 @@ fun CartScreen(
     ) { paddingValues ->
         when (cartFoodsResponse) {
             is ResourceState.Loading -> {
-                val loading = (cartFoodsResponse as ResourceState.Loading)
+                val loading = (cartFoodsResponse as ResourceState.Loading<Nothing?>)
                 Log.d("CartScreen", "CartScreen: Loading... $loading")
             }
 
             is ResourceState.Success -> {
-                val response = (cartFoodsResponse as ResourceState.Success).data
+                val response = (cartFoodsResponse as ResourceState.Success<CartFoodsResponse>).data
                 Log.d(
                     "CartScreen",
                     "CartScreen: SUCCESS... success = ${response.success} | foods.size = ${response.cart_foods.size}"
@@ -179,7 +181,7 @@ fun CartScreen(
 
 
                         ){
-                            CartList(foods = aggregatedFoods, foodsViewModel = foodsViewModel, navController = navController, authViewModel = authViewModel)
+                            CartList(foods = aggregatedFoods, homeViewModel = homeViewModel, navController = navController, authViewModel = authViewModel)
                         }
 
 
@@ -243,7 +245,7 @@ fun CartScreen(
             }
 
             is ResourceState.Error -> {
-                val error = (cartFoodsResponse as ResourceState.Error)
+                val error = (cartFoodsResponse as ResourceState.Error<Nothing?>)
                 Log.d("CartScreen", "CartScreen: Error...: $error")
 
                 Column(
@@ -323,7 +325,7 @@ fun CartScreen(
 @Composable
 fun CartList(
     foods: List<CartFood>,
-    foodsViewModel: FoodsViewModel,
+    homeViewModel: HomeViewModel,
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
@@ -349,7 +351,7 @@ fun CartList(
 
             items(foods.size) { food ->
                 val kullaniciAdi = authViewModel.getUserName()
-                CartCard(food = foods[food], foodsViewModel = foodsViewModel, authViewModel = authViewModel)
+                CartCard(food = foods[food], homeViewModel = homeViewModel, authViewModel = authViewModel)
             }
         }
 
@@ -364,13 +366,13 @@ fun CartList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
+fun CartCard(food: CartFood, homeViewModel: HomeViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
 
     // coroutine scope
     val coroutineScope = rememberCoroutineScope()
 
 
-    val response by foodsViewModel.cartFoods.collectAsState()
+    val response by homeViewModel.cartFoods.collectAsState()
 
     when (response) {
         is ResourceState.Loading -> {
@@ -391,7 +393,7 @@ fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),au
         }
     }
 
-    val deleteFoodFromCartResponse by foodsViewModel.deleteFoodFromCart.collectAsState()
+    val deleteFoodFromCartResponse by homeViewModel.deleteFoodFromCart.collectAsState()
 
     when (deleteFoodFromCartResponse) {
         is ResourceState.Loading -> {
@@ -490,7 +492,7 @@ fun CartCard(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(),au
                 IconButton(
                     onClick = {
                         coroutineScope.launch {
-                            foodsViewModel.deleteFoodFromCart(cart_food_id = food.cart_food_id, user_name = authViewModel.getUserName() )
+                            homeViewModel.deleteFoodFromCart(cart_food_id = food.cart_food_id, user_name = authViewModel.getUserName() )
                         }
                     },
                     modifier = Modifier

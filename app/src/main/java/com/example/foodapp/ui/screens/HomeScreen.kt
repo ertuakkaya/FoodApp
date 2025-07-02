@@ -56,7 +56,8 @@ import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entity.Food
 import com.example.foodapp.ui.viewmodel.AuthState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.FoodsViewModel
+import com.example.foodapp.ui.viewmodel.HomeViewModel
+import com.example.foodapp.ui.viewmodel.DetailViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 
 
@@ -66,7 +67,7 @@ import androidx.compose.ui.graphics.Color
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    foodsViewModel: FoodsViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
@@ -80,7 +81,7 @@ fun HomeScreen(
         }
     }
 
-    val foodsResponse by foodsViewModel.foods.collectAsState()
+    val foodsResponse by homeViewModel.foods.collectAsState()
     var searchText by remember { mutableStateOf("") }
     var filteredFoods by remember { mutableStateOf<List<Food>>(emptyList()) }
 
@@ -174,15 +175,16 @@ fun HomeScreen(
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FoodCard(
     food: Food,
-    foodsViewModel: FoodsViewModel = hiltViewModel(),
+    detailViewModel: DetailViewModel = hiltViewModel(),
     navController: NavController,
     authViewModel: AuthViewModel
 ) {
-    val response by foodsViewModel.addFoodToCart.collectAsState()
+    val response by detailViewModel.addFoodToCart.collectAsState()
 
     var isAddingToCart by remember { mutableStateOf(false) }
 
@@ -248,7 +250,7 @@ fun FoodCard(
                 IconButton(
                     onClick = {
                         isAddingToCart = true
-                        foodsViewModel.addFoodToCart(
+                        detailViewModel.addFoodToCart(
                             food.food_name,
                             food.food_image_name,
                             food.food_price,
@@ -287,7 +289,7 @@ fun FoodList(foods: List<Food>, navController: NavController,authViewModel: Auth
         modifier = Modifier
             .fillMaxSize()
     ) {
-        items(items = foods) { food ->
+        items(items = foods, key = { food -> food.food_id }) { food ->
             FoodCard(food = food, navController = navController, authViewModel = authViewModel)
         }
     }

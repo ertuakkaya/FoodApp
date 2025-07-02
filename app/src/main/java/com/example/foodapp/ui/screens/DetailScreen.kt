@@ -46,11 +46,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.ui.viewmodel.AuthViewModel
-import com.example.foodapp.ui.viewmodel.FoodsViewModel
+import com.example.foodapp.ui.viewmodel.DetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(), navController: NavController, authViewModel: AuthViewModel) {
+fun DetailScreen(food: CartFood, detailViewModel: DetailViewModel = hiltViewModel(), navController: NavController, authViewModel: AuthViewModel) {
     val foodId = food.cart_food_id
     val foodName = food.food_name
     val foodImageName = food.food_image_name
@@ -193,7 +193,7 @@ fun DetailScreen(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(
 
             Button(
                 onClick = {
-                    foodsViewModel.addFoodToCart(
+                    detailViewModel.addFoodToCart(
                         foodName,
                         foodImageName,
                         foodPrice,

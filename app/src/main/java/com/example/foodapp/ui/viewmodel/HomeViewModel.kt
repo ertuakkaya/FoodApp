@@ -16,16 +16,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FoodsViewModel @Inject constructor(private val foodsRepository: FoodsRepository) : ViewModel() {
+class HomeViewModel @Inject constructor(private val foodsRepository: FoodsRepository) : ViewModel() {
 
     private val _foods : MutableStateFlow<ResourceState<FoodsResponse>> = MutableStateFlow(ResourceState.Loading())
     val foods : StateFlow<ResourceState<FoodsResponse>> = _foods
-
-
-    private val _addFoodToCart : MutableStateFlow<ResourceState<CRUDResponse>> = MutableStateFlow(ResourceState.Loading())
-    val addFoodToCart: StateFlow<ResourceState<CRUDResponse>> = _addFoodToCart
-
-
 
     init {
         getAllFoods()
@@ -35,20 +29,9 @@ class FoodsViewModel @Inject constructor(private val foodsRepository: FoodsRepos
         viewModelScope.launch (Dispatchers.IO){
             foodsRepository.getAllFoods().collectLatest {foodsResponse ->
                 _foods.value = foodsResponse
-
             }
         }
     }
-
-    fun addFoodToCart(food_name: String, food_image_name: String, food_price: Int, food_order_quantity: Int, user_name: String = "ertugrul"  ) {
-        viewModelScope.launch (Dispatchers.IO){
-            foodsRepository.addFoodToCart(food_name, food_image_name, food_price, food_order_quantity, user_name).collectLatest {crudResponse->
-                _addFoodToCart.value = crudResponse
-
-            }
-        }
-    }
-
 
     private val _cartFoods : MutableStateFlow<ResourceState<CartFoodsResponse>> = MutableStateFlow(ResourceState.Loading())
     val cartFoods : StateFlow<ResourceState<CartFoodsResponse>> = _cartFoods
@@ -57,7 +40,6 @@ class FoodsViewModel @Inject constructor(private val foodsRepository: FoodsRepos
         viewModelScope.launch (Dispatchers.IO){
             foodsRepository.getCartFoods(user_name).collectLatest {cartFoodsResponse->
                  _cartFoods.value = cartFoodsResponse
-
             }
         }
     }
@@ -73,5 +55,4 @@ class FoodsViewModel @Inject constructor(private val foodsRepository: FoodsRepos
             }
         }
     }
-
 }
