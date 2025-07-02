@@ -1,5 +1,6 @@
 package com.example.foodapp.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -18,10 +18,16 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,14 +48,14 @@ import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.FoodsViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailScreen(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel() ,navController: NavController,authViewModel: AuthViewModel) {
-    var foodId = food.cart_food_id
-    var foodName = food.food_name
-    var foodImageName = food.food_image_name
-    var foodPrice = food.food_price
-    var userName = authViewModel.getUserName()
-
+fun DetailScreen(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(), navController: NavController, authViewModel: AuthViewModel) {
+    val foodId = food.cart_food_id
+    val foodName = food.food_name
+    val foodImageName = food.food_image_name
+    val foodPrice = food.food_price
+    val userName = authViewModel.getUserName()
 
     var quantity by remember {
         mutableStateOf(food.food_order_quantity)
@@ -57,114 +63,159 @@ fun DetailScreen(food: CartFood, foodsViewModel: FoodsViewModel = hiltViewModel(
 
     val totalPrice = food.food_price * quantity
 
-    IconButton(
-        onClick = { navController.navigate("home") }, // back to home
-        modifier = Modifier
-            .padding(20.dp)
-            .wrapContentSize(Alignment.TopStart)
-            .clip(RoundedCornerShape(8.dp)),
-
-    ) {
-        Icon(
-            Icons.Filled.Close, contentDescription = "",
-            modifier = Modifier.size(40.dp),
-            tint = Color.Gray
-        )
-
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-
-        Text(
-            text = "Details",
-            style = MaterialTheme.typography.titleLarge, // Or another appropriate style
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp,
-        )
-
-        Spacer(modifier = Modifier.height(66.dp))
-
-        AsyncImage(
-            model = "http://kasimadalan.pe.hu/yemekler/resimler/${food.food_image_name}",
-            contentDescription = food.food_name,
-            modifier = Modifier
-                .size(300.dp),
-            contentScale = ContentScale.Fit
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = food.food_name,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Price: ${food.food_price} ₺",
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically)
-        {
-
-            Text(text = "Quantity: ")
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(onClick = { if (quantity > 1) quantity-- }) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "")
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-            
-            Text(text = "$quantity",)
-
-            Spacer(modifier = Modifier.width(8.dp))
-
-            IconButton(onClick = { quantity++ }) {
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Total: $totalPrice ₺",
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(80.dp))
-
-        Button(
-            onClick = {
-                foodsViewModel.addFoodToCart(
-                    foodName,
-                    foodImageName,
-                    foodPrice,
-                    quantity,
-                    authViewModel.getUserName()
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Details",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            Icons.Filled.Close,
+                            contentDescription = "Close",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
-            },
+            )
+        }
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .padding(end = 32.dp, start = 32.dp)
-                .fillMaxWidth(),
-
-            colors = ButtonDefaults.buttonColors(Color.DarkGray)
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceAround
         ) {
-            Text(text = "Add to Cart", color = Color.White)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = "http://kasimadalan.pe.hu/yemekler/resimler/${food.food_image_name}",
+                        contentDescription = food.food_name,
+                        modifier = Modifier
+                            .size(250.dp)
+                            .padding(bottom = 8.dp),
+                        contentScale = ContentScale.Fit
+                    )
 
+                    Text(
+                        text = food.food_name,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 28.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Text(
+                        text = "Price: ${food.food_price} ₺",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 20.sp
+                    )
+                }
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Quantity:",
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                IconButton(
+                    onClick = { if (quantity > 1) quantity-- },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(50)) // Make it circular
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "Decrease quantity", tint = MaterialTheme.colorScheme.primary)
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Text(
+                    text = "$quantity",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                IconButton(
+                    onClick = { quantity++ },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(50)) // Make it circular
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Increase quantity", tint = MaterialTheme.colorScheme.primary)
+                }
+            }
+
+            Text(
+                text = "Total: $totalPrice ₺",
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(vertical = 16.dp)
+            )
+
+            Button(
+                onClick = {
+                    foodsViewModel.addFoodToCart(
+                        foodName,
+                        foodImageName,
+                        foodPrice,
+                        quantity,
+                        authViewModel.getUserName()
+                    )
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 16.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                shape = RoundedCornerShape(12.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                Text(
+                    text = "Add to Cart",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }

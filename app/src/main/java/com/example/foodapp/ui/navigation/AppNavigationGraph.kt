@@ -76,7 +76,7 @@ fun AppNavigationGraph (modifier: Modifier = Modifier,authViewModel: AuthViewMod
 
         composable("cart") {
             CartScreen(viewModel, navController = navController, authViewModel = authViewModel)
-            viewModel.getCartFoods()
+            //viewModel.getCartFoods()
         }
 
         composable(
