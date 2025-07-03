@@ -1,12 +1,14 @@
 package com.example.foodapp.data.repository
 
 import android.util.Log
-
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.datasource.FoodsDataSource
 import com.example.foodapp.data.entity.CRUDResponse
 import com.example.foodapp.data.entity.CartFoodsResponse
 import com.example.foodapp.data.entity.FoodsResponse
+import com.example.foodapp.data.error.ErrorType
+import java.io.IOException
+import java.net.SocketTimeoutException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -26,11 +28,19 @@ class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
                 emit(ResourceState.Success(response.body()!!))
             }else{
                 Log.e("FoodsRepository", "Error response: ${response.errorBody()?.string()}")
-                emit(ResourceState.Error("Error when getting foods"))
-
+                val errorType = when(response.code()) {
+                    in 400..499 -> ErrorType.ApiError(response.code(), "Client error")
+                    in 500..599 -> ErrorType.ServerError
+                    else -> ErrorType.UnknownError
+                }
+                emit(ResourceState.Error("Error when getting foods", errorType))
             }
         }.catch { e->
-            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow"))
+            val errorType = when(e) {
+                is IOException, is SocketTimeoutException -> ErrorType.NetworkError
+                else -> ErrorType.UnknownError
+            }
+            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow", errorType))
         }
     }
 
@@ -39,7 +49,7 @@ class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
                                  food_image_name: String,
                                  food_price: Int,
                                  food_order_quantity: Int,
-                                 user_name: String = "ertugrul") : Flow<ResourceState<CRUDResponse>>{
+                                 user_name: String = "") : Flow<ResourceState<CRUDResponse>>{
         return flow {
             emit(ResourceState.Loading()) // show loading at first
 
@@ -48,15 +58,23 @@ class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
             if(response.isSuccessful && response.body() != null){
                 emit(ResourceState.Success(response.body()!!))
             }else{
-                emit(ResourceState.Error("Error when adding food to cart"))
-
+                val errorType = when(response.code()) {
+                    in 400..499 -> ErrorType.ApiError(response.code(), "Client error")
+                    in 500..599 -> ErrorType.ServerError
+                    else -> ErrorType.UnknownError
+                }
+                emit(ResourceState.Error("Error when adding food to cart", errorType))
             }
         }.catch { e->
-            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow"))
+            val errorType = when(e) {
+                is IOException, is SocketTimeoutException -> ErrorType.NetworkError
+                else -> ErrorType.UnknownError
+            }
+            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow", errorType))
         }
     }
 
-    suspend fun getCartFoods(user_name: String = "ertugrul") : Flow<ResourceState<CartFoodsResponse>>{
+    suspend fun getCartFoods(user_name: String = "") : Flow<ResourceState<CartFoodsResponse>>{
         return flow {
             emit(ResourceState.Loading()) // show loading at first
 
@@ -64,18 +82,25 @@ class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
 
             if(response.isSuccessful && response.body() != null){
                 emit(ResourceState.Success(response.body()!!))
-
             }else{
-                emit(ResourceState.Error("Error when getting cart foods"))
-
+                val errorType = when(response.code()) {
+                    in 400..499 -> ErrorType.ApiError(response.code(), "Client error")
+                    in 500..599 -> ErrorType.ServerError
+                    else -> ErrorType.UnknownError
+                }
+                emit(ResourceState.Error("Error when getting cart foods", errorType))
             }
         }.catch { e->
-            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow"))
+            val errorType = when(e) {
+                is IOException, is SocketTimeoutException -> ErrorType.NetworkError
+                else -> ErrorType.UnknownError
+            }
+            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow", errorType))
         }
     }
 
 
-    suspend fun deleteFoodFromCart(cart_food_id: Int, user_name: String = "ertugrul") : Flow<ResourceState<CRUDResponse>>{
+    suspend fun deleteFoodFromCart(cart_food_id: Int, user_name: String = "") : Flow<ResourceState<CRUDResponse>>{
         return flow {
             emit(ResourceState.Loading()) // show loading at first
 
@@ -83,13 +108,20 @@ class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
 
             if(response.isSuccessful && response.body() != null){
                 emit(ResourceState.Success(response.body()!!))
-
             }else{
-                emit(ResourceState.Error("Error when deleting food from cart"))
-
+                val errorType = when(response.code()) {
+                    in 400..499 -> ErrorType.ApiError(response.code(), "Client error")
+                    in 500..599 -> ErrorType.ServerError
+                    else -> ErrorType.UnknownError
+                }
+                emit(ResourceState.Error("Error when deleting food from cart", errorType))
             }
         }.catch { e->
-            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow"))
+            val errorType = when(e) {
+                is IOException, is SocketTimeoutException -> ErrorType.NetworkError
+                else -> ErrorType.UnknownError
+            }
+            emit(ResourceState.Error(e?.localizedMessage?:"Some error in flow", errorType))
         }
     }
 }

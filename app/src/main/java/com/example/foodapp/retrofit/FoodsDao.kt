@@ -27,7 +27,7 @@ interface FoodsDao {
                                 @Field("yemek_resim_adi") food_image_name: String,
                                 @Field("yemek_fiyat") food_price: Int,
                                 @Field("yemek_siparis_adet") food_order_quantity: Int,
-                                @Field("kullanici_adi") user_name: String = "ertugrul"
+                                @Field("kullanici_adi") user_name: String
     ): Response<CRUDResponse>
 
 
@@ -37,7 +37,7 @@ interface FoodsDao {
     @POST("yemekler/sepettenYemekSil.php")
     suspend fun deleteFoodFromCart(
                                  @Field("sepet_yemek_id") cart_food_id: Int,
-                                 @Field("kullanici_adi") user_name: String = "ertugrul"): Response<CRUDResponse>
+                                 @Field("kullanici_adi") user_name: String): Response<CRUDResponse>
 
 
 
@@ -46,6 +46,6 @@ interface FoodsDao {
     @FormUrlEncoded
     @POST("yemekler/sepettekiYemekleriGetir.php")
     suspend fun getCartFoods(
-        @Field("kullanici_adi") user_name: String = "ertugrul"): Response<CartFoodsResponse>
+        @Field("kullanici_adi") user_name: String): Response<CartFoodsResponse>
 
 }

@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -55,7 +54,7 @@ import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entity.Food
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.viewmodel.DetailViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
@@ -70,12 +69,12 @@ fun HomeScreen(
     navController: NavController
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
     Log.d("HOMESCREEN", "HomeScreen composable entered")
 
-    val authState = authViewModel.authState.observeAsState()
-    LaunchedEffect(authState.value) {
-        when(authState.value){
+    val authState by authViewModel.authState.collectAsState()
+    LaunchedEffect(authState) {
+        when(authState){
           is AuthState.Unauthenticated -> navController.navigate("login")
             else -> Unit
         }
@@ -182,7 +181,7 @@ fun FoodCard(
     food: Food,
     detailViewModel: DetailViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: ImprovedAuthViewModel
 ) {
     val response by detailViewModel.addFoodToCart.collectAsState()
 
@@ -281,7 +280,7 @@ fun FoodCard(
 }
 
 @Composable
-fun FoodList(foods: List<Food>, navController: NavController, authViewModel: AuthViewModel) {
+fun FoodList(foods: List<Food>, navController: NavController, authViewModel: ImprovedAuthViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),

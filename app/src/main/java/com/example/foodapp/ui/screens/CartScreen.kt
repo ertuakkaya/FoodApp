@@ -30,7 +30,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 
 import androidx.compose.material3.Card
@@ -51,7 +51,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,7 +81,7 @@ import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.data.entity.CartFoodsResponse
 import com.example.foodapp.data.entity.CRUDResponse
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 import kotlinx.coroutines.coroutineScope
@@ -95,7 +94,7 @@ import kotlinx.coroutines.launch
 fun CartScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: ImprovedAuthViewModel = hiltViewModel()
 ) {
     val cartFoodsResponse by homeViewModel.cartFoods.collectAsState()
 
@@ -125,7 +124,7 @@ fun CartScreen(
                             //.size(40.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
                             tint = MaterialTheme.colorScheme.onSurface
                             //modifier = Modifier.size(40.dp)
@@ -144,8 +143,7 @@ fun CartScreen(
     ) { paddingValues ->
         when (cartFoodsResponse) {
             is ResourceState.Loading -> {
-                val loading = (cartFoodsResponse as ResourceState.Loading<Nothing?>)
-                Log.d("CartScreen", "CartScreen: Loading... $loading")
+                Log.d("CartScreen", "CartScreen: Loading...")
             }
 
             is ResourceState.Success -> {
@@ -245,8 +243,7 @@ fun CartScreen(
             }
 
             is ResourceState.Error -> {
-                val error = (cartFoodsResponse as ResourceState.Error<Nothing?>)
-                Log.d("CartScreen", "CartScreen: Error...: $error")
+                Log.d("CartScreen", "CartScreen: Error... ${cartFoodsResponse.error}")
 
                 Column(
                     modifier = Modifier
@@ -307,10 +304,10 @@ fun CartScreen(
     }
 
     // Firebase
-    val authState = authViewModel.authState.observeAsState()
-    LaunchedEffect(authState.value) {
+    val authState by authViewModel.authState.collectAsState()
+    LaunchedEffect(authState) {
         // Kullanıcı Unauthanticaded durumunda ise login ekranına yönlendir
-        when (authState.value) {
+        when (authState) {
             is AuthState.Unauthenticated -> navController.navigate("login")
             else -> Unit
         }
@@ -327,7 +324,7 @@ fun CartList(
     foods: List<CartFood>,
     homeViewModel: HomeViewModel,
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: ImprovedAuthViewModel
 ) {
 
 
@@ -366,7 +363,7 @@ fun CartList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartCard(food: CartFood, homeViewModel: HomeViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
+fun CartCard(food: CartFood, homeViewModel: HomeViewModel = hiltViewModel(),authViewModel: ImprovedAuthViewModel ){
 
     // coroutine scope
     val coroutineScope = rememberCoroutineScope()

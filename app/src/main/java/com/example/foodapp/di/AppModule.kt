@@ -2,6 +2,7 @@ package com.example.foodapp.di
 
 import com.example.foodapp.data.datasource.FoodsDataSource
 import com.example.foodapp.data.repository.FoodsRepository
+import com.example.foodapp.domain.service.UserService
 import com.example.foodapp.retrofit.ApiUtils
 import com.example.foodapp.retrofit.FoodsDao
 import dagger.Module
@@ -22,8 +23,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideFoodsDataSource(foodsDao: FoodsDao) : FoodsDataSource{
-        return FoodsDataSource(foodsDao)
+    fun provideFoodsDataSource(foodsDao: FoodsDao, userService: UserService) : FoodsDataSource{
+        return FoodsDataSource(foodsDao, userService)
     }
 
     @Provides

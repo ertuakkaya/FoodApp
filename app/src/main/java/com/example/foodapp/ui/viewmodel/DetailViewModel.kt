@@ -19,7 +19,7 @@ class DetailViewModel @Inject constructor(private val foodsRepository: FoodsRepo
     private val _addFoodToCart : MutableStateFlow<ResourceState<CRUDResponse>> = MutableStateFlow(ResourceState.Loading())
     val addFoodToCart: StateFlow<ResourceState<CRUDResponse>> = _addFoodToCart
 
-    fun addFoodToCart(food_name: String, food_image_name: String, food_price: Int, food_order_quantity: Int, user_name: String = "ertugrul"  ) {
+    fun addFoodToCart(food_name: String, food_image_name: String, food_price: Int, food_order_quantity: Int, user_name: String = ""  ) {
         viewModelScope.launch (Dispatchers.IO){
             foodsRepository.addFoodToCart(food_name, food_image_name, food_price, food_order_quantity, user_name).collectLatest {crudResponse->
                 _addFoodToCart.value = crudResponse

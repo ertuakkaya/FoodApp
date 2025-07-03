@@ -63,13 +63,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(navController: NavController) {
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
 
 
     var email by remember { mutableStateOf("") }

@@ -45,14 +45,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entity.CartFood
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 import com.example.foodapp.ui.viewmodel.DetailViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(food: CartFood, navController: NavController) {
     val detailViewModel: DetailViewModel = hiltViewModel()
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
     val foodId = food.cart_food_id
     val foodName = food.food_name
     val foodImageName = food.food_image_name

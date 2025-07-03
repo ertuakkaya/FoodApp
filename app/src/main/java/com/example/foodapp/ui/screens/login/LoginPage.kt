@@ -3,7 +3,7 @@ package com.example.foodapp.ui.screens.login
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,7 +20,7 @@ import androidx.compose.material3.TextButton
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,7 +45,7 @@ fun LoginPage(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")
@@ -55,19 +55,18 @@ fun LoginPage(
         mutableStateOf("")
     }
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
 
 
 
     // Launch effect, bu sayfa açıldığında çalışacak
-    LaunchedEffect(authState.value) {
-        when(authState.value){
-
+    LaunchedEffect(authState) {
+        when(authState){
             is AuthState.Authenticated -> navController.navigate("home")
             is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+                (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
         }
     }
@@ -107,9 +106,8 @@ fun LoginPage(
 
         Button(onClick = {
             authViewModel.login(email,password)
-
         },
-            enabled = authState.value != AuthState.Loading
+            enabled = authState != AuthState.Loading
         ) {
             Text(text = "Login")
         }

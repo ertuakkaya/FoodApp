@@ -13,7 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,13 +25,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.AuthViewModel
+import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
 
 
 
 @Composable
 fun SignUpPage(modifier: Modifier = Modifier,navController: NavController) {
-    val authViewModel: AuthViewModel = hiltViewModel()
+    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")
@@ -41,17 +41,16 @@ fun SignUpPage(modifier: Modifier = Modifier,navController: NavController) {
         mutableStateOf("")
     }
 
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(authState.value) {
-        when (authState.value) {
+    LaunchedEffect(authState) {
+        when (authState) {
             is AuthState.Authenticated -> navController.navigate("home")
             is AuthState.Error -> Toast.makeText(
                 context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT
+                (authState as AuthState.Error).message, Toast.LENGTH_SHORT
             ).show()
-
             else -> Unit
         }
     }
@@ -92,7 +91,7 @@ fun SignUpPage(modifier: Modifier = Modifier,navController: NavController) {
             onClick = {
                 authViewModel.signUp(email, password)
             },
-            enabled = authState.value != AuthState.Loading
+            enabled = authState != AuthState.Loading
         ) {
             Text(text = "Create account")
         }

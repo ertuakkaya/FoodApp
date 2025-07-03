@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(private val foodsRepository: FoodsReposi
     private val _cartFoods : MutableStateFlow<ResourceState<CartFoodsResponse>> = MutableStateFlow(ResourceState.Loading())
     val cartFoods : StateFlow<ResourceState<CartFoodsResponse>> = _cartFoods
 
-    fun getCartFoods(user_name: String = "ertugrul") {
+    fun getCartFoods(user_name: String = "") {
         viewModelScope.launch (Dispatchers.IO){
             foodsRepository.getCartFoods(user_name).collectLatest {cartFoodsResponse->
                  _cartFoods.value = cartFoodsResponse
@@ -47,7 +47,7 @@ class HomeViewModel @Inject constructor(private val foodsRepository: FoodsReposi
     private val _deleteFoodFromCart : MutableStateFlow<ResourceState<CRUDResponse>> = MutableStateFlow(ResourceState.Loading())
     val deleteFoodFromCart: StateFlow<ResourceState<CRUDResponse>> = _deleteFoodFromCart
 
-    fun deleteFoodFromCart(cart_food_id: Int, user_name: String = "ertugrul") {
+    fun deleteFoodFromCart(cart_food_id: Int, user_name: String = "") {
         viewModelScope.launch (Dispatchers.IO){
             foodsRepository.deleteFoodFromCart(cart_food_id, user_name).collectLatest {crudResponse->
                 _deleteFoodFromCart.value = crudResponse
