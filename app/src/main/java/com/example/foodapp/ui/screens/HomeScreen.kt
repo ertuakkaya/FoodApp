@@ -58,6 +58,7 @@ import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.viewmodel.DetailViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
+import com.example.foodapp.ui.components.SuccessPopup
 
 
 import androidx.compose.material3.CircularProgressIndicator
@@ -83,6 +84,10 @@ fun HomeScreen(
     val foodsResponse by homeViewModel.foods.collectAsState()
     var searchText by remember { mutableStateOf("") }
     var filteredFoods by remember { mutableStateOf<List<Food>>(emptyList()) }
+    
+    // Success popup state for the entire HomeScreen
+    var showSuccessPopup by remember { mutableStateOf(false) }
+    var successMessage by remember { mutableStateOf("") }
 
     when (foodsResponse) {
         is ResourceState.Loading -> {
@@ -151,8 +156,23 @@ fun HomeScreen(
 
                         Spacer(modifier = Modifier.height(16.dp))
 
-                        Box(modifier = Modifier.weight(1f)) {
-                            FoodList(foods = filteredFoods, navController = navController, authViewModel = authViewModel)
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            items(items = filteredFoods, key = { food -> food.food_id }) { food ->
+                                FoodCard(
+                                    food = food, 
+                                    navController = navController, 
+                                    authViewModel = authViewModel,
+                                    onShowSuccessPopup = { foodName ->
+                                        successMessage = "$foodName successfully added to cart!"
+                                        showSuccessPopup = true
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -172,6 +192,13 @@ fun HomeScreen(
             }
         }
     }
+    
+    // Success Popup for the entire HomeScreen
+    SuccessPopup(
+        isVisible = showSuccessPopup,
+        message = successMessage,
+        onDismiss = { showSuccessPopup = false }
+    )
 }
 
 
@@ -181,25 +208,35 @@ fun FoodCard(
     food: Food,
     detailViewModel: DetailViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    onShowSuccessPopup: (String) -> Unit
 ) {
     val response by detailViewModel.addFoodToCart.collectAsState()
 
-    var isAddingToCart by remember { mutableStateOf(false) }
+    var isAddingToCart by remember(food.food_id) { mutableStateOf(false) }
+    var hasTriggeredSuccess by remember(food.food_id) { mutableStateOf(false) }
 
-    when (response) {
-        is ResourceState.Loading -> {
-            Log.d("AddToCart", "AddToCart: Loading...")
-        }
-        is ResourceState.Success -> {
-            val response = (response as ResourceState.Success).data
-            Log.d("AddToCart", "AddToCart: SUCCESS... success = ${response.success} | message = ${response.message}")
-            isAddingToCart = false
-        }
-        is ResourceState.Error -> {
-            val error = (response as ResourceState.Error)
-            Log.d("AddToCart", "AddToCart: Error... $error")
-            isAddingToCart = false
+    LaunchedEffect(response, food.food_id) {
+        when (response) {
+            is ResourceState.Loading -> {
+                Log.d("AddToCart", "AddToCart: Loading for ${food.food_name}")
+            }
+            is ResourceState.Success -> {
+                val responseData = (response as ResourceState.Success).data
+                Log.d("AddToCart", "AddToCart: SUCCESS for ${food.food_name}... success = ${responseData.success}")
+                if (responseData.success == 1 && isAddingToCart && !hasTriggeredSuccess) {
+                    hasTriggeredSuccess = true
+                    onShowSuccessPopup(food.food_name)
+                    detailViewModel.clearAddToCartState()
+                }
+                isAddingToCart = false
+            }
+            is ResourceState.Error -> {
+                val error = (response as ResourceState.Error)
+                Log.d("AddToCart", "AddToCart: Error for ${food.food_name}... $error")
+                isAddingToCart = false
+                hasTriggeredSuccess = false
+            }
         }
     }
 
@@ -249,6 +286,7 @@ fun FoodCard(
                 IconButton(
                     onClick = {
                         isAddingToCart = true
+                        hasTriggeredSuccess = false
                         detailViewModel.addFoodToCart(
                             food.food_name,
                             food.food_image_name,
@@ -278,23 +316,5 @@ fun FoodCard(
         }
     }
 }
-
-@Composable
-fun FoodList(foods: List<Food>, navController: NavController, authViewModel: AuthViewModel) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        items(items = foods, key = { food -> food.food_id }) { food ->
-            FoodCard(food = food, navController = navController, authViewModel = authViewModel)
-        }
-    }
-}
-
-
-
 
 

@@ -29,6 +29,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,8 +47,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.foodapp.data.entity.CartFood
+import com.example.foodapp.data.ResourceState
 import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.DetailViewModel
+import com.example.foodapp.ui.components.SuccessPopup
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +66,31 @@ fun DetailScreen(food: CartFood, navController: NavController) {
     var quantity by remember {
         mutableStateOf(food.food_order_quantity)
     }
+    
+    var showSuccessPopup by remember { mutableStateOf(false) }
+    val addToCartResponse by detailViewModel.addFoodToCart.collectAsState()
 
     val totalPrice = food.food_price * quantity
+    
+    // Handle add to cart response
+    when (addToCartResponse) {
+        is ResourceState.Success -> {
+            val response = (addToCartResponse as ResourceState.Success).data
+            if (response.success == 1) {
+                showSuccessPopup = true
+                // Clear the state to prevent showing popup again
+                LaunchedEffect(Unit) {
+                    detailViewModel.clearAddToCartState()
+                }
+            }
+        }
+        is ResourceState.Error -> {
+            // Handle error if needed
+        }
+        is ResourceState.Loading -> {
+            // Handle loading if needed
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -220,4 +247,11 @@ fun DetailScreen(food: CartFood, navController: NavController) {
             }
         }
     }
+    
+    // Success Popup
+    SuccessPopup(
+        isVisible = showSuccessPopup,
+        message = "${foodName} successfully added to cart!",
+        onDismiss = { showSuccessPopup = false }
+    )
 }
