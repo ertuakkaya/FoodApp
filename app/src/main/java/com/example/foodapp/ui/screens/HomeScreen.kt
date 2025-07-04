@@ -54,7 +54,7 @@ import com.example.foodapp.R
 import com.example.foodapp.data.ResourceState
 import com.example.foodapp.data.entity.Food
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.viewmodel.DetailViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
@@ -69,7 +69,7 @@ fun HomeScreen(
     navController: NavController
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
-    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     Log.d("HOMESCREEN", "HomeScreen composable entered")
 
     val authState by authViewModel.authState.collectAsState()
@@ -181,7 +181,7 @@ fun FoodCard(
     food: Food,
     detailViewModel: DetailViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: ImprovedAuthViewModel
+    authViewModel: AuthViewModel
 ) {
     val response by detailViewModel.addFoodToCart.collectAsState()
 
@@ -280,7 +280,7 @@ fun FoodCard(
 }
 
 @Composable
-fun FoodList(foods: List<Food>, navController: NavController, authViewModel: ImprovedAuthViewModel) {
+fun FoodList(foods: List<Food>, navController: NavController, authViewModel: AuthViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),

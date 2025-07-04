@@ -14,3 +14,10 @@
 .cxx
 local.properties
 gemini.md
+
+# Temporary development files
+tmp_rovodev_*
+*_OLD.kt
+*Improved*.kt
+app/src/main/java/**/ui/state/
+app/src/main/java/**/ui/components/StateFlow*

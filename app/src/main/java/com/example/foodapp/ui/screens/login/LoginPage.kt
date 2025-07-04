@@ -3,7 +3,7 @@ package com.example.foodapp.ui.screens.login
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
-import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -45,7 +45,7 @@ fun LoginPage(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
 
     var email by remember {
         mutableStateOf("")

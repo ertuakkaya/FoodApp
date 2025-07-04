@@ -24,14 +24,14 @@ import com.example.foodapp.ui.screens.HomeScreen
 import com.example.foodapp.ui.screens.CartScreen
 import com.example.foodapp.ui.screens.login.LoginPage
 import com.example.foodapp.ui.screens.signup.SignUpPage
-import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigationGraph (modifier: Modifier = Modifier) {
-    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = "splash") {

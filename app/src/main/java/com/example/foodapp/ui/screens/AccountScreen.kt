@@ -43,6 +43,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,13 +64,14 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(navController: NavController) {
-    val authViewModel: ImprovedAuthViewModel = hiltViewModel()
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val authState by authViewModel.authState.collectAsState()
 
 
     var email by remember { mutableStateOf("") }
@@ -177,7 +179,7 @@ fun AccountScreen(navController: NavController) {
                     authViewModel.signOut()
                     navController.navigate("login")
                 },
-                enabled = if ( authViewModel.authState.value == AuthState.Authenticated ) true else false,
+                enabled = authState == AuthState.Authenticated,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp, end = 8.dp, bottom = 16.dp),

@@ -81,7 +81,7 @@ import com.example.foodapp.data.entity.CartFood
 import com.example.foodapp.data.entity.CartFoodsResponse
 import com.example.foodapp.data.entity.CRUDResponse
 import com.example.foodapp.ui.viewmodel.AuthState
-import com.example.foodapp.ui.viewmodel.ImprovedAuthViewModel
+import com.example.foodapp.ui.viewmodel.AuthViewModel
 import com.example.foodapp.ui.viewmodel.HomeViewModel
 import com.example.foodapp.ui.navigation.BottomNavigationBar
 import kotlinx.coroutines.coroutineScope
@@ -94,7 +94,7 @@ import kotlinx.coroutines.launch
 fun CartScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-    authViewModel: ImprovedAuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val cartFoodsResponse by homeViewModel.cartFoods.collectAsState()
 
@@ -243,7 +243,7 @@ fun CartScreen(
             }
 
             is ResourceState.Error -> {
-                Log.d("CartScreen", "CartScreen: Error... ${cartFoodsResponse.error}")
+                Log.d("CartScreen", "CartScreen: Error... ${(cartFoodsResponse as ResourceState.Error).error}")
 
                 Column(
                     modifier = Modifier
@@ -324,7 +324,7 @@ fun CartList(
     foods: List<CartFood>,
     homeViewModel: HomeViewModel,
     navController: NavController,
-    authViewModel: ImprovedAuthViewModel
+    authViewModel: AuthViewModel
 ) {
 
 
@@ -363,7 +363,7 @@ fun CartList(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CartCard(food: CartFood, homeViewModel: HomeViewModel = hiltViewModel(),authViewModel: ImprovedAuthViewModel ){
+fun CartCard(food: CartFood, homeViewModel: HomeViewModel = hiltViewModel(),authViewModel: AuthViewModel ){
 
     // coroutine scope
     val coroutineScope = rememberCoroutineScope()
