@@ -31,8 +31,9 @@ FoodApp is a modern Android application for food ordering, built with Jetpack Co
 
 ### Cart Management
 - **Add to Cart**: Select items with custom quantities
-- **Cart Operations**: View, update quantities, and remove items
+- **Cart Operations**: View, update quantities, and remove items with improved UI and quantity controls
 - **Real-time Updates**: Automatic cart synchronization across sessions
+- **Dummy Checkout**: Simulate a checkout process by clearing the cart
 
 ### User Authentication
 - **Secure Login/Register**: Email and password authentication via Firebase
@@ -154,7 +155,8 @@ app/src/main/java/com/example/foodapp/
     │   ├── CartScreen.kt        # Shopping cart screen
     │   └── AccountScreen.kt     # User profile screen
     ├── state/                   # UI state classes
-    │   └── HomeUiState.kt       # Home screen state
+    │   ├── HomeUiState.kt       # Home screen state
+    │   └── MainActivity.kt      # Main Activity (moved to ui package)
     ├── theme/                   # App theming
     │   ├── Color.kt             # Color definitions
     │   ├── Theme.kt             # Theme configuration
@@ -162,7 +164,8 @@ app/src/main/java/com/example/foodapp/
     └── viewmodel/               # ViewModels
         ├── HomeViewModel.kt     # Home screen logic
         ├── DetailViewModel.kt   # Detail screen logic
-        └── AuthViewModel.kt     # Authentication logic
+        ├── AuthViewModel.kt     # Authentication logic
+        └── CartViewModel.kt     # Cart screen logic
 ```
 
 ## Setup & Installation
