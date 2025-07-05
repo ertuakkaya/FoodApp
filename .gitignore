@@ -14,6 +14,29 @@
 .cxx
 local.properties
 gemini.md
+.agent.md
+
+# Documentation files (except README.md)
+ARCHITECTURE.md
+API.md
+SETUP.md
+DEPLOYMENT.md
+CONTRIBUTING.md
+DOCUMENTATION_INDEX.md
+DOCUMENTATION_SUMMARY.md
+ARCHITECTURE_IMPROVEMENTS.md
+app/gemini.md
+README_OLD.md
+
+# Improved architecture files (temporary during migration)
+app/src/main/java/**/ui/viewmodel/Improved*.kt
+app/src/main/java/**/ui/state/UiState.kt
+app/src/main/java/**/ui/state/FoodUiState.kt
+app/src/main/java/**/ui/state/AuthUiState.kt
+app/src/main/java/**/ui/state/DetailUiState.kt
+app/src/main/java/**/ui/utils/StateUtils.kt
+app/src/main/java/**/ui/utils/ValidationUtils.kt
+app/src/main/java/**/ui/utils/Extensions.kt
 
 # Temporary development files
 tmp_rovodev_*

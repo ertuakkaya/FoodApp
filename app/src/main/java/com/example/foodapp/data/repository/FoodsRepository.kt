@@ -14,6 +14,21 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Repository class that handles food-related data operations.
+ * 
+ * This repository acts as a single source of truth for food data,
+ * abstracting the data sources from the ViewModels and providing
+ * a clean API for data operations.
+ * 
+ * Features:
+ * - Centralized error handling with ResourceState wrapper
+ * - Network error categorization and recovery
+ * - Reactive data streams using Kotlin Flow
+ * - Automatic data transformation and validation
+ * 
+ * @property foodsDataSource Data source for remote food API operations
+ */
 class FoodsRepository @Inject constructor(var foodsDataSource: FoodsDataSource){
 
 
